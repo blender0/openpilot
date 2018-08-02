@@ -59,3 +59,12 @@ DBC = {
   CAR.SORENTO: dbc_dict('kia_sorento_2018', None),
   CAR.STINGER: dbc_dict('kia_sorento_2018', None),
 }
+
+# Can Bus which the camera is connected to.
+# This is due to some cars using Totota Giraffe
+CAM_BUS = {
+  CAR.ELANTRA: 1,
+  CAR.GENESIS: 2,
+  CAR.SORENTO: 1,
+  CAR.STINGER: 1,  
+}

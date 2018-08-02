@@ -2,7 +2,7 @@ from selfdrive.car.hyundai.values import CAR, DBC
 from selfdrive.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 
-def get_can_parser2(CP):
+def get_can_parser2(CP, bus):
 
   signals = [
     ("Byte0", "LKAS11", 0),
@@ -27,7 +27,7 @@ def get_can_parser2(CP):
     ("LKAS12", 10)      # LKAS12 = 10Hz
   ]
 
-  return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 1)
+  return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, bus)
 
 
 class CamState(object):

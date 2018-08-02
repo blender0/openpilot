@@ -6,7 +6,7 @@ from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.hyundai.carstate import CarState, get_can_parser
 from selfdrive.car.hyundai.camstate import CamState, get_can_parser2
-from selfdrive.car.hyundai.values import CAR
+from selfdrive.car.hyundai.values import CAR, CAM_BUS
 from selfdrive.swaglog import cloudlog
 
 try:
@@ -34,7 +34,7 @@ class CarInterface(object):
     self.CamS = CamState(CP)
 
     self.cp = get_can_parser(CP)
-    self.cp2 = get_can_parser2(CP)
+    self.cp2 = get_can_parser2(CP, CAM_BUS[CP.carFingerprint])
 
     # sending if read only is False
     if sendcan is not None:
