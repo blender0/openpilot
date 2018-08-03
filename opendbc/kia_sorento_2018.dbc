@@ -950,8 +950,30 @@ BO_ 832 LKAS11: 8 LDWS_LKAS
  SG_ Byte5 : 40|8@1+ (1,0) [0|3] "" XXX
  SG_ Byte6 : 48|8@1+ (1,0) [0|3] "" XXX
  SG_ Byte7 : 56|8@1+ (1,0) [0|3] "" XXX
-
-
+ SG_ CF_Lkas_LdwsSysState : 2|4@1+ (1,0) [0|15] "" CLU,IBOX,PSB
+ SG_ CF_Lkas_SysWarning : 6|4@1+ (1,0) [0|15] "" BCM,CLU
+ SG_ CF_Lkas_LdwsLHWarning : 10|2@1+ (1,0) [0|3] "" BCM,CLU,PSB
+ SG_ CF_Lkas_LdwsRHWarning : 12|2@1+ (1,0) [0|3] "" BCM,CLU,PSB
+ SG_ CF_Lkas_HbaLamp : 14|1@1+ (1,0) [0|1] "" CLU
+ SG_ CF_Lkas_FcwBasReq : 15|1@1+ (1,0) [0|1] "" ABS,ESC
+ SG_ CR_Lkas_StrToqReq : 16|11@1+ (0.0078125,-8) [-8|8] "Nm" MDPS
+ SG_ CF_Lkas_ActToi : 27|1@1+ (1,0) [0|1] "" MDPS
+ SG_ CF_Lkas_ToiFlt : 28|1@1+ (1,0) [0|1] "" MDPS
+ SG_ CF_Lkas_HbaSysState : 29|3@1+ (1,0) [0|7] "" BCM,CLU
+ SG_ CF_Lkas_FcwOpt : 32|2@1+ (1,0) [0|3] "" CLU
+ SG_ CF_Lkas_HbaOpt : 34|1@1+ (1,0) [0|1] "" BCM,CGW
+ SG_ CF_Lkas_MsgCount : 36|4@1+ (1,0) [0|15] "" CLU,MDPS
+ SG_ CF_Lkas_FcwSysState : 40|3@1+ (1,0) [0|7] "" CLU
+ SG_ CF_Lkas_FcwCollisionWarning : 43|2@1+ (1,0) [0|3] "" CLU
+ SG_ CF_Lkas_FusionState : 45|2@1+ (1,0) [0|3] "" SCC
+ SG_ CF_Lkas_Chksum : 48|8@1+ (1,0) [0|255] "" MDPS
+ SG_ CF_Lkas_FcwOpt_USM : 56|3@1+ (1,0) [0|7] "" CLU
+ SG_ CF_Lkas_LdwsOpt_USM : 59|3@1+ (1,0) [0|7] "" CLU,MDPS
+ SG_ Unknown1 : 0|2@1+ (1,0) [0|3] "" XXX
+ SG_ Unknown2 : 35|1@0+ (1,0) [0|1] "" XXX
+ SG_ Unknown3 : 47|1@0+ (1,0) [0|1] "" XXX
+ SG_ Unknown5 : 63|1@0+ (1,0) [0|1] "" XXX
+ SG_ Unknown4 : 62|2@0+ (1,0) [0|3] "" XXX
 
 BO_ 1342 LKAS12: 6 LDWS_LKAS
  SG_ Byte0 : 0|8@1+ (1,0) [0|3] "" XXX
@@ -960,6 +982,16 @@ BO_ 1342 LKAS12: 6 LDWS_LKAS
  SG_ Byte3 : 24|8@1+ (1,0) [0|3] "" XXX
  SG_ Byte4 : 32|8@1+ (1,0) [0|3] "" XXX
  SG_ Byte5 : 40|8@1+ (1,0) [0|3] "" XXX
+ SG_ CF_Lkas_TsrSlifOpt : 10|2@1+ (1,0) [0|3] "" CLU
+ SG_ CF_LkasTsrStatus : 12|2@1+ (1,0) [0|3] "" CLU
+ SG_ CF_Lkas_TsrSpeed_Display_Clu : 16|8@1+ (1,0) [0|255] "" CLU
+ SG_ CF_LkasTsrSpeed_Display_Navi : 24|8@1+ (1,0) [0|255] "" BCM,CLU
+ SG_ CF_Lkas_TsrAddinfo_Display : 32|2@1+ (1,0) [0|3] "" CLU
+ SG_ unknown1 : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ unknown2 : 8|2@1+ (1,0) [0|3] "" XXX
+ SG_ unknown3 : 14|2@1+ (1,0) [0|3] "" XXX
+ SG_ unknown4 : 34|6@1+ (1,0) [0|63] "" XXX
+ SG_ unknown5 : 40|8@1+ (1,0) [0|255] "" XXX
 
 BO_ 1338 TMU_GW_E_01: 8 CLU
  SG_ CF_Gway_TeleReqDrLock : 0|2@1+ (1,0) [0|3] "" BCM
