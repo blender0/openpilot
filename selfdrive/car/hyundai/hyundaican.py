@@ -20,7 +20,7 @@ def make_can_msg(addr, dat, alt, cks=False):
 
 
 def create_lkas11(packer, byte0, byte1, byte2, byte3, \
-  byte4, byte5, byte6, byte7, bus):
+  byte4, byte5, byte6, byte7):
   """Creates a CAN message for the Hyundai LKAS11."""
   values = {
     'Byte0' : byte0,
@@ -33,9 +33,9 @@ def create_lkas11(packer, byte0, byte1, byte2, byte3, \
     'Byte7' : byte7,
   }
 
-  return packer.make_can_msg("LKAS11", bus, values)
+  return packer.make_can_msg("LKAS11", 0, values)
 
-def create_lkas12b(packer, byte0, byte1, byte2, byte3, byte4, byte5, bus):
+def create_lkas12b(packer, byte0, byte1, byte2, byte3, byte4, byte5):
   values = {
     'Byte0' : byte0,
     'Byte1' : byte1,
@@ -45,4 +45,4 @@ def create_lkas12b(packer, byte0, byte1, byte2, byte3, byte4, byte5, bus):
     'Byte5' : byte5,
   }
 
-  return packer.make_can_msg("LKAS12", bus, values)
+  return packer.make_can_msg("LKAS12", 0, values)

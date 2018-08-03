@@ -30,7 +30,6 @@ class CarController(object):
     self.ipas_reset_counter = 0
     self.turning_inhibit = 0
     self.hide_lkas_fault = 180
-    self.bus = CAM_BUS[self.car_fingerprint]
     print self.car_fingerprint
 
     self.packer = CANPacker(dbc_name)
@@ -161,11 +160,10 @@ class CarController(object):
         lkas11_byte4 + lkas11_byte5 + lkas11_byte7) % 256
     
 
-
     # Create LKAS11 Message at 100Hz
     can_sends.append(create_lkas11(self.packer, lkas11_byte0, \
       lkas11_byte1, lkas11_byte2, lkas11_byte3, lkas11_byte4, \
-      lkas11_byte5, checksum, lkas11_byte7, self.bus))
+      lkas11_byte5, checksum, lkas11_byte7))
 
    
 
@@ -173,11 +171,11 @@ class CarController(object):
     if (frame % 10) == 0:
       if LKAS_12[self.car_fingerprint] == 1:
         can_sends.append(create_lkas12b(self.packer, CamS.lkas12_b0, CamS.lkas12_b1, \
-          CamS.lkas12_b2, CamS.lkas12_b3, CamS.lkas12_b4, CamS.lkas12_b5, self.bus))
+          CamS.lkas12_b2, CamS.lkas12_b3, CamS.lkas12_b4, CamS.lkas12_b5))
       if LKAS_12[self.car_fingerprint] == 2:
-        can_sends.append(create_lkas12b(self.packer, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, self.bus))
+        can_sends.append(create_lkas12b(self.packer, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00))
       if LKAS_12[self.car_fingerprint] == 3:
-        can_sends.append(create_lkas12b(self.packer, 0x00, 0x00, 0x00, 0x00, 0x80, 0x05, self.bus))
+        can_sends.append(create_lkas12b(self.packer, 0x00, 0x00, 0x00, 0x00, 0x80, 0x05))
 
 
 

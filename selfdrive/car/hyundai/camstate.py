@@ -3,7 +3,7 @@ from selfdrive.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 
 def get_can_parser2(CP, bus):
-
+  
   signals = [
     ("Byte0", "LKAS11", 0),
     ("Byte1", "LKAS11", 0),
@@ -26,7 +26,7 @@ def get_can_parser2(CP, bus):
     ("LKAS11", 100),    # LKAS11 = 100Hz
     ("LKAS12", 10)      # LKAS12 = 10Hz
   ]
-
+  
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, bus)
 
 
