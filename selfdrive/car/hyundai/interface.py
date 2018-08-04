@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from common.realtime import sec_since_boot
-from cereal import car
+from cereal import car, log
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
 from selfdrive.controls.lib.vehicle_model import VehicleModel
@@ -71,17 +71,17 @@ class CarInterface(object):
     tireStiffnessRear = 90000
 
     ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-    ret.steerActuatorDelay = 0.09  # Default delay, Prius has larger delay
+    ret.steerActuatorDelay = 0.1  # Default delay, Prius has larger delay
 
     #borrowing a lot from corolla, given similar car size
-    ret.steerKf = 0.000078   # full torque for 20 deg at 80mph means 0.00007818594
+    ret.steerKf = 0.00008   # full torque for 20 deg at 80mph means 0.00007818594
     ret.steerRateCost = 1.
     stop_and_go = True
     ret.mass = 1985 + std_cargo
     ret.wheelbase = 2.78 
-    ret.steerRatio = 15.5
-    ret.steerKpV, ret.steerKiV = [[0.16], [0.005]]
-    ret.centerToFront = ret.wheelbase * 0.38
+    ret.steerRatio = 15.0
+    ret.steerKpV, ret.steerKiV = [[0.20], [0.007]]
+    ret.centerToFront = ret.wheelbase * 0.4
 
     ret.longPidDeadzoneBP = [0., 9.]
     ret.longPidDeadzoneV = [0., .15]
@@ -258,7 +258,7 @@ class CarInterface(object):
 
   # pass in a car.CarControl
   # to be called @ 100hz
-  def apply(self, c):
+  def apply(self, c, perception_state=log.Live20Data.new_message()):
 
     self.CC.update(self.sendcan, c.enabled, self.CS, self.frame, c.actuators, self.CamS)
 
