@@ -70,36 +70,14 @@ class CarInterface(object):
     tireStiffnessRear_civic = 202500
 
     ret.steerActuatorDelay = 0.1  # Default delay
-    tire_stiffness_factor = 1.
+    tire_stiffness_factor = 0.85  # Given all tested vehicle so far run better with this reduced below 0.85, this will becomes the default for now
 
-    if candidate == CAR.SANTA_FE:
-      ret.steerKf = 0.00005
-      ret.steerRateCost = 0.5
-      ret.mass = 3982 * CV.LB_TO_KG + std_cargo
-      ret.wheelbase = 2.766
-
-      # Values from optimizer
-      ret.steerRatio = 16.55  # 13.8 is spec end-to-end
-      tire_stiffness_factor = 0.82
-
-      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      ret.steerKpV, ret.steerKiV = [[0.37], [0.1]]
-      ret.minSteerSpeed = 0.
-    elif candidate == CAR.KIA_SORENTO:
-      ret.steerKf = 0.00005
-      ret.steerRateCost = 0.5
-      ret.mass = 1985 + std_cargo
-      ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1   # 10% higher at the center seems reasonable
-      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      ret.steerKpV, ret.steerKiV = [[0.25], [0.05]]
-      ret.minSteerSpeed = 0.
-    elif candidate == CAR.ELANTRA:
+    if candidate == CAR.ELANTRA:
       ret.steerKf = 0.00006
       ret.steerRateCost = 0.5
       ret.mass = 1275 + std_cargo
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73   #Spec
+      ret.steerRatio = 13.73        # Spec
       tire_stiffness_factor = 0.385
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.25], [0.05]]
@@ -113,6 +91,25 @@ class CarInterface(object):
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.16], [0.01]]
       ret.minSteerSpeed = 35 * CV.MPH_TO_MS
+    elif candidate == CAR.GENESIS_2:
+      ret.steerKf = 0.00005
+      ret.steerRateCost = 0.5
+      ret.mass = 2060 + std_cargo
+      ret.wheelbase = 3.01
+      ret.steerRatio = 16.5
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.16], [0.01]]
+      ret.minSteerSpeed = 35 * CV.MPH_TO_MS
+    elif candidate == CAR.KIA_SORENTO:
+      ret.steerKf = 0.00005
+      ret.steerRateCost = 0.5
+      ret.mass = 1985 + std_cargo
+      ret.wheelbase = 2.78
+      ret.steerRatio = 14.4         # Stock Value
+      tire_stiffness_factor = 0.75  # Based on testing
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.20], [0.05]]
+      ret.minSteerSpeed = 0.
     elif candidate == CAR.KIA_STINGER:
       ret.steerKf = 0.00005
       ret.steerRateCost = 0.5
@@ -121,6 +118,32 @@ class CarInterface(object):
       ret.steerRatio = 14.4 * 1.15   # 15% higher at the center seems reasonable
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
       ret.steerKpV, ret.steerKiV = [[0.25], [0.05]]
+      ret.minSteerSpeed = 0.
+    elif candidate == CAR.SANTA_FE:
+      ret.steerKf = 0.00005
+      ret.steerRateCost = 0.5
+      ret.mass = 3982 * CV.LB_TO_KG + std_cargo
+      ret.wheelbase = 2.766
+
+      # Values from optimizer
+      ret.steerRatio = 16.55  # 13.8 is spec end-to-end
+      tire_stiffness_factor = 0.82
+
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.37], [0.1]]
+      ret.minSteerSpeed = 0.
+    elif candidate == CAR.SANTA_FE_2:
+      ret.steerKf = 0.00005
+      ret.steerRateCost = 0.5
+      ret.mass = 3982 * CV.LB_TO_KG + std_cargo
+      ret.wheelbase = 2.766
+
+      # Values from optimizer
+      ret.steerRatio = 16.55  # 13.8 is spec end-to-end
+      tire_stiffness_factor = 0.82
+
+      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      ret.steerKpV, ret.steerKiV = [[0.30], [0.05]]
       ret.minSteerSpeed = 0.
 
     ret.minEnableSpeed = -1.   # enable is done by stock ACC, so ignore this
@@ -191,7 +214,7 @@ class CarInterface(object):
     ret.wheelSpeeds.rr = self.CS.v_wheel_rr
 
     # gear shifter
-    if self.CP.carFingerprint == CAR.ELANTRA:
+    if self.CP.carFingerprint == CAR.ELANTRA or self.CP.carFingerprint == CAR.KIA_SORENTO:
       ret.gearShifter = self.CS.gear_shifter_cluster
     else:
       ret.gearShifter = self.CS.gear_shifter
@@ -280,8 +303,7 @@ class CarInterface(object):
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
     # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
-      (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)):
+    if (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     if ret.gasPressed:
