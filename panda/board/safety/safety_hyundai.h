@@ -8,6 +8,7 @@ int hyundai_camera_detected = 0;
 int hyundai_camera_bus = 0;
 int hyundai_giraffe_switch_2 = 0;          // is giraffe switch 2 high?
 int hyundai_rt_torque_last = 0;
+int hyundai_desired_torque_last = 0;
 int hyundai_cruise_engaged_last = 0;
 uint32_t hyundai_ts_last = 0;
 struct sample_t hyundai_torque_driver;         // last few driver torques measured
@@ -121,9 +122,10 @@ static int hyundai_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   // FORCE CANCEL: safety check only relevant when spamming the cancel button.
   // ensuring that only the cancel button press is sent (VAL 4) when controls are off.
   // This avoids unintended engagements while still allowing resume spam
-  if (((to_send->RIR>>21) == 1265) && !controls_allowed && ((to_send->RDTR >> 4) & 0xFF) == 0) {
-    if ((to_send->RDLR & 0x7) != 4) return 0;
-  }
+  // TODO: fix bug preventing the button msg to be fwd'd on bus 2
+  //if (((to_send->RIR>>21) == 1265) && !controls_allowed && ((to_send->RDTR >> 4) & 0xFF) == 0) {
+  //  if ((to_send->RDLR & 0x7) != 4) return 0;
+  //}
 
   // 1 allows the message through
   return true;
@@ -139,7 +141,6 @@ static int hyundai_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
     if (bus_num == 0) return (uint8_t)(hyundai_camera_bus);
     if (bus_num == hyundai_camera_bus) return (uint8_t)(0);
   }
-
   return -1;
 }
 
