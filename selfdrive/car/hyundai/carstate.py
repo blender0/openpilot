@@ -246,6 +246,7 @@ class CarState(object):
     self.main_on = True
     self.acc_active = (cp.vl["SCC12"]['ACCMode'] != 0) if not self.cstm_btns.get_button_status("alwon") else \
       (cp.vl["SCC11"]["MainMode_ACC"] != 0)  # I'm Dangerous!
+    self.acc_active_real = (cp.vl["SCC12"]['ACCMode'] !=0)
     self.pcm_acc_status = int(self.acc_active)
 
     # calc best v_ego estimate, by averaging two opposite corners

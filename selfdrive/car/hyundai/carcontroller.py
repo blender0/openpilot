@@ -164,14 +164,15 @@ class CarController(object):
     # Ensure the speed limit is within range of the stock cruise control capabilities
     # Do the spamming 10 times a second, we might get from 0 to 10 successful
     # Only do this if we have not yet set the cruise speed
-    if CS.acc_active_real and not self.speed_adjusted and self.map_speed > (8.5 * self.speed_conv) and (self.cnt % 10 == 0)
+    if CS.acc_active_real and not self.speed_adjusted and self.map_speed > (8.5 * self.speed_conv) and (self.cnt % 10 == 0):
         # Use some tolerance because of Floats being what they are...
         if (CS.cruise_set_speed * self.speed_conv) > (self.map_speed * 1.005):
             can_sends.append(create_clu11(self.packer, CS.clu11, Buttons.SET_DECEL))
         elif (CS.cruise_set_speed * self.speed_conv) < (self.map_speed / 1.005):
             can_sends.append(create_clu11(self.packer, CS.clu11, Buttons.RES_ACCEL))
         # If nothing needed adjusting, then the speed has been set, which will lock out this control
-        else self.speed_adjusted = True
+        else:
+            self.speed_adjusted = True
 
     ### Send messages to canbus
     sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())
