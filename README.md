@@ -71,7 +71,7 @@ Also, we have a several thousand people community on [slack](https://slack.comma
 Hardware
 ------
 
-Right now openpilot supports the [EON Dashcam DevKit](https://comma.ai/shop/products/eon-dashcam-devkit). We'd like to support other platforms as well.
+At the moment openpilot supports the [EON Dashcam DevKit](https://comma.ai/shop/products/eon-dashcam-devkit). A [panda](https://shop.comma.ai/products/panda-obd-ii-dongle) and a [giraffe](https://comma.ai/shop/products/giraffe/) are recommended tools to interface the EON with the car. We'd like to support other platforms as well.
 
 Install openpilot on a neo device by entering ``https://openpilot.comma.ai`` during NEOS setup.
 
@@ -134,8 +134,8 @@ Please note, this is the HYUNDAI AND KIA Community Build, while others are suppo
 <sup>3</sup>[GM installation guide](https://zoneos.com/volt/).  
 <sup>4</sup>It needs an extra 120Ohm resistor ([pic1](https://i.imgur.com/CmdKtTP.jpg), [pic2](https://i.imgur.com/s2etUo6.jpg)) on bus 3 and giraffe switches set to 01X1 (11X1 for stock LKAS), where X depends on if you have the [comma power](https://comma.ai/shop/products/power/).  
 <sup>5</sup>28mph for Camry 4CYL L, 4CYL LE and 4CYL SE which don't have Full-Speed Range Dynamic Radar Cruise Control.  
-<sup>6</sup>Open sourced [Hyundai Giraffe](https://github.com/commaai/neo/tree/master/giraffe/hyundai) is designed ofor the 2019 Sante Fe; pinout may differ for other Hyundais. <br />
-<sup>7</sup>Community built Giraffe, find more information here, [GM Giraffe](https://zoneos.com/shop/) <br />
+<sup>6</sup>Open sourced [Hyundai Giraffe](https://github.com/commaai/neo/tree/master/giraffe/hyundai) is designed ofor the 2019 Sante Fe; pinout may differ for other Hyundais.  
+<sup>7</sup>Community built Giraffe, find more information here, [GM Giraffe](https://zoneos.com/shop/).  
 
 Community Maintained Cars
 ------
