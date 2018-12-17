@@ -150,7 +150,7 @@ class CarController(object):
         if map_data.liveMapData.speedLimitValid == True and map_data.liveMapData.speedLimit > 0:
           last_speed = self.map_speed
           # Get the speed limit, and add the offset to it,
-          self.map_speed = (map_data.liveMapData.speedLimit * self.speed_conv) + float(self.params.get("SpeedLimitOffset"))
+          self.map_speed = (map_data.liveMapData.speedLimit + float(self.params.get("SpeedLimitOffset"))) * self.speed_conv
           # Compare it to the last time the speed was read.  If it is different, set the flag to allow it to auto set out speed
           if last_speed != self.map_speed:
               self.speed_adjusted = False
