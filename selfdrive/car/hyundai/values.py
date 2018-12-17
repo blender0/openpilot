@@ -13,7 +13,7 @@ def get_hud_alerts(visual_alert, audible_alert):
 class CAR:
   ELANTRA = "HYUNDAI ELANTRA LIMITED ULTIMATE 2017"   # First User @TK211X    <-- Ported by @ku7 (Second, First Hyundai in World)
   GENESIS = "HYUNDAI GENESIS 2018"                    # First User @xx979xx   <-- Ported by @xx979xx
-  GENESIS_3 = "HYUNDAI GENESIS 2018 TYPE 2"           # First User @andrewhlr <-- Ported by @andrewhlr and @ku7
+  GENESIS_2 = "HYUNDAI GENESIS 2018 TYPE 2"           # First User @andrewhlr <-- Ported by @andrewhlr and @ku7
   KIA_SORENTO = "KIA SORENTO GT LINE 2018"            # First User @ku7       <-- Ported by @ku7 (First Kia in World)
   KIA_STINGER = "KIA STINGER GT2 2018"                # First User @killian   <-- Ported by @ku7 (Third)
   SANTA_FE = "HYUNDAI SANTA FE LIMITED 2019"          # First User @rickbias  <-- Ported by @rickbias
