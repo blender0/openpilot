@@ -23,7 +23,6 @@ from selfdrive.controls.lib.latcontrol import LatControl
 from selfdrive.controls.lib.alertmanager import AlertManager
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.driver_monitor import DriverStatus
-
 from selfdrive.locationd.calibration_helpers import Calibration, Filter
 
 ThermalStatus = log.ThermalData.ThermalStatus
@@ -275,7 +274,7 @@ def state_control(plan, CS, CP, state, events, v_cruise_kph, v_cruise_kph_last, 
                                               v_cruise_kph, plan.vTarget, plan.vTargetFuture, plan.aTarget,
                                               CP, PL.lead_1)
   # Steering PID loop and lateral MPC
-  actuators.steer, actuators.steerAngle = LaC.update(active, CS.vEgo, CS.steeringAngle, CS.steeringRate,
+  actuators.steer, actuators.steerAngle = LaC.update(active, CS.vEgo, CS.steeringAngle,
                                                      CS.steeringPressed, plan.dPoly, angle_offset, CP, VM, PL)
 
   # Send a "steering required alert" if saturation count has reached the limit
@@ -366,7 +365,7 @@ def data_send(perception_state, plan, plan_ts, CS, CI, CP, VM, state, events, ac
     "jerkFactor": float(plan.jerkFactor),
     "angleOffset": float(angle_offset),
     "gpsPlannerActive": plan.gpsPlannerActive,
-    "cumLagMs": -rk.remaining*1000.,
+    "cumLagMs": -rk.remaining * 1000.,
   }
   live100.send(dat.to_bytes())
 
@@ -417,7 +416,7 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
 
   # No sendcan if passive
   if not passive:
-        sendcan = messaging.pub_sock(context, service_list['sendcan'].port)
+    sendcan = messaging.pub_sock(context, service_list['sendcan'].port)
   else:
     sendcan = None
 
@@ -473,7 +472,7 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
   mismatch_counter = 0
   low_battery = False
 
-  rk = Ratekeeper(rate, print_delay_threshold=2./1000)
+  rk = Ratekeeper(rate, print_delay_threshold=2. / 1000)
 
   # Read angle offset from previous drive, fallback to default
   angle_offset = default_bias
@@ -514,9 +513,7 @@ def controlsd_thread(gctx=None, rate=100, default_bias=0.):
     CC = data_send(PL.perception_state, plan, plan_ts, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, carstate, carcontrol,
                    live100, livempc, AM, driver_status, LaC, LoC, angle_offset, passive)
     prof.checkpoint("Sent")
- #######
 
-    # *** run loop at fixed rate ***
     rk.keep_time()  # Run at 100Hz
     prof.display()
 
