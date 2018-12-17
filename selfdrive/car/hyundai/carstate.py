@@ -4,7 +4,6 @@ from selfdrive.config import Conversions as CV
 from common.kalman.simple_kalman import KF1D
 from selfdrive.car.modules.UIBT_module import UIButtons,UIButton
 from selfdrive.car.modules.UIEV_module import UIEvents
-#from selfdrive.car.modules.OSM_module import OSM
 import numpy as np
 
 
