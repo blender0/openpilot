@@ -140,12 +140,12 @@ def get_camera_parser(CP):
 class CarState(object):
   def __init__(self, CP):
     #labels for buttons
-    self.btns_init = [["alca","ALC",["MadMax","Normal","Wifey"]], \
+    self.btns_init = [["","",["","",""]], \
+                      ["","",[""]], \
+                      ["alca","ALC",["MadMax", "Normal", "Wifey"]], \
                       ["cam","CAM",[""]], \
-                      ["alwon","MAD",[""]], \
-                      ["sound","SND",[""]], \
-                      ["", "",[""]], \
-                      ["", "", [""]]]
+                      ["alwon", "MAD",[""]], \
+                      ["sound", "SND", [""]]]
 
     # ALCA PARAMS
     # max REAL delta angle for correction vs actuator
