@@ -52,18 +52,6 @@ class LatControl(object):
     self.frames = 0
     self.curvature_factor = 0.0
     self.slip_factor = 0.0
-    self.deadzone = 0.0
-
-  def update_rt_params(self, CP, rt_mpc_flag, deadzone=0.):
-    # TODO:  Is this really necessary, or is the original reference preserved through the cap n' proto setup?
-    # Real-time tuning:  Update these values from the CP if called from real-time tuning logic in controlsd
-    self.pid._k_p = (CP.steerKpBP, CP.steerKpV)    # proportional gain
-    self.pid._k_i = (CP.steerKiBP, CP.steerKiV)    # integral gain
-    self.pid.k_f = CP.steerKf                         # feedforward gain
-    self.deadzone = deadzone
-    # Re-init the MPC with the new steerRateCost if it changed
-    if rt_mpc_flag:
-      self.rtt_reset_mpc = True
 
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
@@ -83,13 +71,12 @@ class LatControl(object):
     self.angle_steers_des_mpc = 0.0
     self.angle_steers_des_prev = 0.0
     self.angle_steers_des_time = 0.0
-    self.rtt_reset_mpc = False
 
   def reset(self):
     self.pid.reset()
 
   def update(self, active, v_ego, angle_steers, angle_rate, steer_override, d_poly, angle_offset, CP, VM, PL):
-    cur_time = sec_since_boot()
+    cur_time = sec_since_boot()    
     self.mpc_updated = False
     # TODO: this creates issues in replay when rewinding time: mpc won't run
     if self.last_mpc_ts < PL.last_md_ts:
@@ -102,11 +89,11 @@ class LatControl(object):
       ratioDelayFactor = 1. + self.ratioDelayScale * abs(angle_steers / 100.) ** self.ratioDelayExp
 
       # Determine a proper delay time that includes the model's processing time, which is variable
-      plan_age = _DT_MPC + cur_time - float(PL.last_md_ts / 1000000000.0)
+      plan_age = _DT_MPC + cur_time - float(PL.last_md_ts / 1000000000.0) 
       total_delay = ratioDelayFactor * CP.steerActuatorDelay + plan_age
 
       # Use steering rate from the last 2 samples to estimate acceleration for a more realistic future steering rate
-      accelerated_angle_rate = 2.0 * angle_rate - self.prev_angle_rate
+      accelerated_angle_rate = 2.0 * angle_rate - self.prev_angle_rate    
 
       # Project the future steering angle for the actuator delay only (not model delay)
       projected_angle_steers = ratioDelayFactor * CP.steerActuatorDelay * accelerated_angle_rate + angle_steers
@@ -132,20 +119,13 @@ class LatControl(object):
       self.cur_state[0].delta = delta_desired
 
       self.angle_steers_des_mpc = float(math.degrees(delta_desired * CP.steerRatio) + angle_offset)
-
+      
       # Use the model's solve time instead of cur_time
       self.angle_steers_des_time = float(self.last_mpc_ts / 1000000000.0)
-
+      
       # Use last 2 desired angles to determine the model's desired steer rate
       self.angle_rate_desired = (self.angle_steers_des_mpc - self.angle_steers_des_prev) / _DT_MPC
       self.mpc_updated = True
-
-      # Real-Time Tuning:  Reset MPC if steerRateCost changed
-      # TODO:  Figure out if this is the best way to accomplish the real-time change to steerRateCost
-      if self.rtt_reset_mpc:
-        self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, VM.CP.steerRateCost)
-        self.cur_state[0].delta = math.radians(angle_steers) / VM.CP.steerRatio
-        self.rtt_reset_mpc = False
 
       #  Check for infeasable MPC solution
       self.mpc_nans = np.any(np.isnan(list(self.mpc_solution[0].delta)))
@@ -187,13 +167,13 @@ class LatControl(object):
           and (abs(float(restricted_steer_rate)) > abs(angle_rate) or (float(restricted_steer_rate) < 0) != (angle_rate < 0)) \
           and (float(restricted_steer_rate) < 0) == (float(self.angle_steers_des) - float(angle_offset) - 0.5 < 0):
         ff_type = "r"
-        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + self.ff_rate_factor * float(restricted_steer_rate)) / self.smooth_factor
+        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + self.ff_rate_factor * float(restricted_steer_rate)) / self.smooth_factor  
       elif abs(self.angle_steers_des - float(angle_offset)) > 0.5:
         ff_type = "a"
-        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + self.ff_angle_factor * float(apply_deadzone(float(self.angle_steers_des) - float(angle_offset), 0.5))) / self.smooth_factor
+        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + self.ff_angle_factor * float(apply_deadzone(float(self.angle_steers_des) - float(angle_offset), 0.5))) / self.smooth_factor  
       else:
         ff_type = "r"
-        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + 0.0) / self.smooth_factor
+        self.feed_forward = (((self.smooth_factor - 1.) * self.feed_forward) + 0.0) / self.smooth_factor  
 
       if CP.steerControlType == car.CarParams.SteerControlType.torque:
           self.feed_forward *= v_ego**2

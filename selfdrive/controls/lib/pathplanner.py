@@ -15,10 +15,6 @@ class PathPlanner(object):
     self.lane_width_estimate = 2.9 #3.7
     self.lane_width_certainty = 1.0
     self.lane_width = 2.9  #3.7
-    self.cam_offset = CAMERA_OFFSET
-
-  def update_rt_params(self, cam_offset):
-    self.cam_offset = cam_offset
 
   def update(self, v_ego, md):
     if md is not None:
@@ -27,8 +23,8 @@ class PathPlanner(object):
       r_poly = model_polyfit(md.model.rightLane.points, self._path_pinv)  # right line
 
       # only offset left and right lane lines; offsetting p_poly does not make sense
-      l_poly[3] += self.cam_offset
-      r_poly[3] += self.cam_offset
+      l_poly[3] += CAMERA_OFFSET
+      r_poly[3] += CAMERA_OFFSET
 
       p_prob = 1.  # model does not tell this probability yet, so set to 1 for now
       l_prob = md.model.leftLane.prob  # left line prob
