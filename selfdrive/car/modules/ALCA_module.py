@@ -102,7 +102,7 @@ class ALCAController(object):
     #import settings
     self.CC = carcontroller  # added to start, will see if we need it actually
     # variables for lane change
-    self.angle_offset = 0. #added when one needs to compensate for missalignment
+    self.angle_offset = 1. #added when one needs to compensate for missalignment
     self.alcaEnabled = alcaEnabled
     self.laneChange_strStartFactor = 2.
     self.laneChange_strStartMultiplier = 1.5
