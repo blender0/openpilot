@@ -63,7 +63,7 @@ class CarInterface(object):
     # scale unknown params for other cars
     mass_civic = 2923 * CV.LB_TO_KG + std_cargo
     wheelbase_civic = 2.70
-    centerToFront_civic = wheelbase_civic * 0.45
+    centerToFront_civic = wheelbase_civic * 0.39
     centerToRear_civic = wheelbase_civic - centerToFront_civic
     rotationalInertia_civic = 2500
     tireStiffnessFront_civic = 192150
@@ -76,7 +76,7 @@ class CarInterface(object):
     ret.steerActuatorDelay = 0.10
     ret.steerKf = 0.00006
     ret.steerRateCost = 0.50
-    tire_stiffness_factor = 0.90
+    tire_stiffness_factor = 0.85
     ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
     ret.steerKpV, ret.steerKiV = [[0.12], [0.06]]
     ret.minSteerSpeed = 0.
