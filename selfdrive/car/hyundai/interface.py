@@ -5,7 +5,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.hyundai.carstate import CarState, get_can_parser, get_camera_parser
-from selfdrive.car.hyundai.values import CAMERA_MSGS, CAR, get_hud_alerts
+from selfdrive.car.hyundai.values import CAMERA_MSGS, CAR, get_hud_alerts, FEATURES
 
 try:
   from selfdrive.car.hyundai.carcontroller import CarController
@@ -189,8 +189,10 @@ class CarInterface(object):
     ret.wheelSpeeds.rr = self.CS.v_wheel_rr
 
     # gear shifter
-    if (True):
+    if self.CP.carFingerprint in FEATURES["use_cluster_gears"]:
       ret.gearShifter = self.CS.gear_shifter_cluster
+    elif self.CP.carFingerprint in FEATURES["use_tcu_gears"]:
+      ret.gearShifter = self.CS.gear_shifter_tcu
     else:
       ret.gearShifter = self.CS.gear_shifter
 
@@ -256,7 +258,7 @@ class CarInterface(object):
         events.append(create_event('commIssue', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     else:
       self.can_invalid_count = 0
-    if (not ret.gearShifter == 'drive') and (self.CP.carFingerprint != CAR.KIA_OPTIMA):
+    if (not ret.gearShifter == 'drive'):
       events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if ret.doorOpen:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))

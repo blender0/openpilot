@@ -58,7 +58,8 @@ def get_can_parser(CP):
 
     ("ESC_Off_Step", "TCS15", 0),
 
-    ("CF_Lvr_GearInf", "LVR11", 0),        #Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
+    ("CF_Lvr_GearInf", "LVR11", 0),
+    ("CUR_GR", "TCU12", 0),                #Transmission Gear (0 = N or P, 1-8 = Fwd, 14 = Rev)
 
     ("CR_Mdps_StrColTq", "MDPS12", 0),
     ("CF_Mdps_Def", "MDPS12", 0),
@@ -309,6 +310,17 @@ class CarState(object):
       self.gear_shifter_cluster = "reverse"
     else:
       self.gear_shifter_cluster = "unknown"
+
+    # gear selection using TCU12
+    gear2 = cp.vl["TCU12"]["CUR_GR"]
+    if gear2 == 0:
+      self.gear_shifter = "neutral"
+    elif gear2 == 14:
+      self.gear_shifter = "reverse"
+    elif gear2 >= 1 and gear2 <= 8:   # currently only aware of 8 speed MAX
+      self.gear_shifter = "drive"
+    else:
+      self.gear_shifter = "unknown"
 
     # save the entire LKAS11, CLU11 and MDPS12
     #print cp_cam.can_valid, cp_cam2.can_valid
