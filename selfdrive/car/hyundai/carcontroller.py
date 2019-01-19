@@ -16,8 +16,8 @@ from selfdrive.config import Conversions as CV
 # Steer torque limits
 
 class SteerLimitParams:
-  STEER_MAX = 300   # 409 is the max
-  STEER_DELTA_UP = 2
+  STEER_MAX = 255   # >255 results in frozen torque, >409 results in no torque
+  STEER_DELTA_UP = 3
   STEER_DELTA_DOWN = 5
 
 class CarController(object):

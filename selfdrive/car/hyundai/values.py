@@ -68,6 +68,7 @@ FEATURES = {
   "soft_disable_137": [CAR.GENESIS],                    # Any steer message sent below 13.7m/s faults MDPS
   "soft_disable_168": [CAR.GENESIS_2],                  # Any steer message below 16.5m/s faults MDPS
   "use_cluster_gears": [CAR.ELANTRA, CAR.KIA_SORENTO],  # Use Cluster for Gear Selection, rather than Transmission
+  "use_tcu_gears": [CAR.KIA_OPTIMA],                    # Use TCU Message for Gear Selection
   "dnf_mdps": [CAR.SANTA_FE, CAR.SANTA_FE_2],           # Do not forward a modified MDPS message.. different checksum
 }
 
