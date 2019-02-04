@@ -77,7 +77,7 @@ class CarInterface(object):
     ret.steerActuatorDelay = 0.10
     ret.steerKf = 0.00006
     ret.steerRateCost = 0.50
-    tire_stiffness_factor = 0.60
+    tire_stiffness_factor = 0.65
     ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
     ret.steerKpV, ret.steerKiV = [[0.12], [0.06]]
     ret.minSteerSpeed = 0.
