@@ -450,6 +450,8 @@ def main():
     del managed_processes['logcatd']
     del managed_processes['tombstoned']
     del managed_processes['proclogd']
+  if os.getenv("NOCONTROLSD") is not None:
+    del managed_processes['controlsd']
   if os.getenv("NOCONTROL") is not None:
     del managed_processes['controlsd']
     del managed_processes['radard']
