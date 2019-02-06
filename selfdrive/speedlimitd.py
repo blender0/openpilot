@@ -15,8 +15,10 @@ def make_query(lat, lon, radius):
     return """(
     way
     """ + pos + """
-    [highway];
-    >;);out;
+    [highway]
+    [maxspeed];
+    ._;
+    out;
     """
 
 def parse_way(way):
