@@ -11,12 +11,21 @@ from selfdrive.services import service_list
 import selfdrive.messaging as messaging
 
 def make_query(lat, lon, radius):
+    # pos = "  (around:%f,%f,%f)" % (radius, lat, lon)
+    # return """(
+    # way
+    # """ + pos + """
+    # [highway];
+    # >;);out;
+    # """
     pos = "  (around:%f,%f,%f)" % (radius, lat, lon)
     return """(
     way
     """ + pos + """
-    [highway];
-    >;);out;
+    [highway]
+    [maxspeed];
+    ._;
+    out;
     """
 
 def parse_way(way):
