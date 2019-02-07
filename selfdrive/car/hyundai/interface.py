@@ -50,7 +50,7 @@ class CarInterface(object):
 
     # kg of standard extra cargo to count for drive, gas, etc...
     std_cargo = 200 # Comma use 136kg  ..  Fuel = 60kg, Driver = 80kg (assuming 70kg and not naked), Cargo = 20kg .. This is the minimum.. assume 50% of the time there is a passenger also 70kg and not naked, so 40kg.
-    weight_dist_rear = 0.45
+    weight_dist_rear = 0.39
 
     ret = car.CarParams.new_message()
 
