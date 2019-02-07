@@ -49,7 +49,7 @@ def parse_way(way):
     #print max_speed
     return max_speed
 
-def get_max_speed(lat, lon, radius=5.):
+def get_max_speed(lat, lon, radius=7.):
     api = overpy.Overpass()
 
     for _ in range(10):
