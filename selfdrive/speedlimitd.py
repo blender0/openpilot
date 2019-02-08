@@ -19,7 +19,7 @@ def make_query(lat, lon, radius):
     # >;);out;
     # """
     pos = "  (around:%f,%f,%f)" % (radius, lat, lon)
-    return """(
+    return """
     way
     """ + pos + """
     [highway]
@@ -92,12 +92,12 @@ def speedlimitd_thread():
           speedlimit_sock.send(dat.to_bytes())
         except Exception as e:
           print(e)
+          
+    time.sleep(0.5)
 
 def main(gctx=None):
   speedlimitd_thread()
 
-  while True:
-    time.sleep(0.5)
 
 if __name__ == "__main__":
   main()
