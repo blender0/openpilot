@@ -153,12 +153,12 @@ class Way:
 
     return max_speed
 
-  def stop_sign(self, point):
-    if not point:
+  def stop_sign(self, node):
+    if not node:
       return False
     
     stop = False
-    tags = point.tags
+    tags = node.tags
 
     if 'stop' in tags:
       if tags['stop'] == 'all':
@@ -166,11 +166,11 @@ class Way:
       
     return stop
 
-  def stop_light(self, point):
-    if not point:
+  def stop_light(self, node):
+    if not node:
       return False
     
-    tags = point.tags
+    tags = node.tags
 
     if 'traffic_signals' in tags:
       return True
