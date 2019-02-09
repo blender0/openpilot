@@ -153,6 +153,30 @@ class Way:
 
     return max_speed
 
+  def stop_sign(self, point):
+    if not point:
+      return False
+    
+    stop = False
+    tags = point.tags
+
+    if 'stop' in tags:
+      if tags['stop'] == 'all':
+        stop = True
+      
+    return stop
+
+  def stop_light(self, point):
+    if not point:
+      return False
+    
+    tags = point.tags
+
+    if 'traffic_signals' in tags:
+      return True
+    else:
+      return False
+
   def on_way(self, lat, lon, heading, points=None):
     if points is None:
       points = self.points_in_car_frame(lat, lon, heading)

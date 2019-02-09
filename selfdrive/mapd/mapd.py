@@ -152,6 +152,8 @@ def mapsd_thread():
   upcoming_curvature = 0.
   dist_to_turn = 0.
   road_points = None
+  stop_sign = False
+  stop_light = False
 
   while True:
     gps = messaging.recv_one(gps_sock)
@@ -240,6 +242,12 @@ def mapsd_thread():
             upcoming_curvature = 0.
             dist_to_turn = 999
 
+        # Look for stop signs or lights
+        spnt = cur_way.closest_point(lat, lon, heading)
+        stop_sign = cur_way.stop_sign(spnt)
+        stop_light = cur_way.stop_light(spnt)
+
+
       query_lock.release()
 
     dat = messaging.new_message()
@@ -251,8 +259,11 @@ def mapsd_thread():
     if cur_way is not None:
       dat.liveMapData.wayId = cur_way.id
 
-      # Seed limit
-      max_speed = cur_way.max_speed
+      # Speed limit
+      if stop_sign or stop_light:
+        max_speed = 1
+      else:
+        max_speed = cur_way.max_speed
       if max_speed is not None:
         dat.liveMapData.speedLimitValid = True
         dat.liveMapData.speedLimit = max_speed
