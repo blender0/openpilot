@@ -159,7 +159,6 @@ class Way:
     
     stop = False
     tags = node.tags
-
     if 'stop' in tags:
       if tags['stop'] == 'all':
         stop = True
@@ -170,12 +169,12 @@ class Way:
     if not node:
       return False
     
+    stop = False
     tags = node.tags
-
     if 'traffic_signals' in tags:
-      return True
-    else:
-      return False
+        stop = True
+      
+    return stop
 
   def on_way(self, lat, lon, heading, points=None):
     if points is None:

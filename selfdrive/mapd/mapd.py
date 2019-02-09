@@ -177,6 +177,8 @@ def mapsd_thread():
       map_valid = False
     else:
       map_valid = True
+      stop_sign = False
+      stop_light = False
       lat = gps.latitude
       lon = gps.longitude
       heading = gps.bearing
@@ -267,7 +269,7 @@ def mapsd_thread():
 
       # Speed limit
       if stop_sign or stop_light:
-        max_speed = 1
+        max_speed = 0.5
       else:
         max_speed = cur_way.max_speed
       if max_speed is not None:
