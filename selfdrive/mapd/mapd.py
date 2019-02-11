@@ -245,16 +245,18 @@ def mapsd_thread():
             dist_to_turn = 999
 
         # Look for stop signs or lights
-        results, tree, real_nodes, node_to_way = last_query_result
-        cur_pos = geodetic2ecef((lat, lon, 0))
-        nodes = tree.query_ball_point(cur_pos, 200)
-        if nodes:
-          for n in nodes:
-            real_node = real_nodes[n]
-            if cur_way.stop_sign(real_node):
-              stop_sign = True
-            if cur_way.stop_light(real_node):
-              stop_light = True
+        stop_sign, stop_light = cur_way.stop_sign_light(last_query_result, lat, lon, heading)
+
+        # results, tree, real_nodes, node_to_way = last_query_result
+        # cur_pos = geodetic2ecef((lat, lon, 0))
+        # nodes = tree.query_ball_point(cur_pos, 200)
+        # if nodes:
+        #   for n in nodes:
+        #     real_node = real_nodes[n]
+        #     if cur_way.stop_sign(real_node):
+        #       stop_sign = True
+        #     if cur_way.stop_light(real_node):
+        #       stop_light = True
 
       query_lock.release()
 

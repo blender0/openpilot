@@ -153,6 +153,127 @@ class Way:
 
     return max_speed
 
+  def degreesToRadians(self, degrees):
+    return degrees * math.pi / 180
+
+  def distance(self, lat1, lon1, lat2, lon2):
+    r = 6371000
+    lat = self.degreesToRadians(lat2 - lat1)
+    lon = self.degreesToRadians(lon2 - lon1)
+
+    a = math.sin(lat/2)**2 + math.sin(lon/2)**2 * math.cos(self.degreesToRadians(lat1)) * math.cos(self.degreesToRadians(lat2))
+    d = r * 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+
+    return d
+
+  def angle(self, lat1, lon1, lat2, lon2):
+    lon = self.degreesToRadians(lon2 - lon1)
+
+    a = math.sin(lon) * math.cos(lat2)
+    b = math.cos(self.degreesToRadians(lat1)) * math.sin(self.degreesToRadians(lat2)) - math.sin(self.degreesToRadians(lat1)) * math.cos(self.degreesToRadians(lat2)) * math.cos(lon)
+
+    a = math.degrees(math.atan2(a, b))
+    return 360 - (a + 360) % 360
+
+  def next_node(self, query_results, nodes, lat, lon, heading, lookahead=200):
+    nodes_pot= []
+    nn = None
+    
+    results, tree, real_nodes, node_to_way = query_results
+    cur_pos = geodetic2ecef((lat, lon, 0))
+
+    # check current way
+    # filter nodes down to those in front on you and on the same way
+    for n in nodes:
+      nlat = float(real_nodes[n].lat)
+      nlon = float(real_nodes[n].lon)
+      if self.way not in node_to_way[real_nodes[n].id]:
+        continue
+      if abs(heading - self.angle(lat, lon, nlat, nlon)) > 90:
+        continue
+      nodes_pot.append(real_nodes[n])
+
+    near = tree.query(cur_pos, 50)
+    ind = np.array(near[1])
+    d = np.array(near[0])
+    for i in enumerate(ind):
+      if d[i[0]] > 0.1 and d[i[0]]<=lookahead:
+        if real_nodes[i[1]] in nodes_pot:
+          nn = real_nodes[i[1]]
+          break
+
+    return nn
+
+def get_nodes_along_path(self, query_results, lat, lon, heading, lookahead=200):
+    nodes = []
+    ways = []
+    ang = heading
+    way_ang = 90
+
+    results, tree, real_nodes, node_to_way = query_results
+    cur_pos = geodetic2ecef((lat, lon, 0))
+    nodes_all = tree.query_ball_point(cur_pos, lookahead)
+
+    way = self
+    nlat = float(lat)
+    nlon = float(lon)
+
+    while True:
+      n = way.next_node(query_results, nodes_all, nlat, nlon, heading, lookahead)
+
+      # traverse current way
+      if n:
+        while n != None:
+          nodes.append(n)
+          nlat = float(n.lat)
+          nlon = float(n.lon)
+          
+          # TODO: update heading from last 2 points
+          n = way.next_node(query_results, nodes_all, nlat, nlon, ang, lookahead)
+          if n:
+            ang = self.angle(nlat, nlon, float(n.lat), float(n.lon))
+        if not n:
+          break
+
+        # find next closest way in same direction
+        ways = node_to_way[nodes[-1].id]
+        ways = [w for w in ways if w.id != way.id]
+        way_best = None
+        for w in ways:
+          if self.distance(nlat, nlon, float(w.nodes[1].lat), float(w.nodes[1].lon)) < self.distance(nlat, nlon, float(w.nodes[-2].lat), float(w.nodes[-2].lon)):
+            a = abs(ang - self.angle(nlat, nlon, float(w.nodes[1].lat), float(w.nodes[1].lon)))
+          else:
+            a = abs(ang - self.angle(nlat, nlon, float(w.nodes[-2].lat), float(w.nodes[-2].lon)))
+          if a < 30 and a < way_ang:
+            way_best = w
+            way_ang = ang
+        if way_best:
+          way = Way(way_best)
+        else:
+          break
+
+      else:
+        break
+
+    return nodes
+
+  def stop_sign_light(self, query_results, lat, lon, heading):
+    sign = False
+    light = False
+
+    results, tree, real_nodes, node_to_way = query_results
+    cur_pos = geodetic2ecef((lat, lon, 0))
+    nodes = self.get_nodes_along_path(query_results, lat, lon, heading, lookahead)
+
+    if nodes:
+      for n in nodes:
+        if self.stop_sign(n):
+          sign = True
+        if self.stop_light(n):
+          light = True
+
+    return sign, light
+
   def stop_sign(self, node):
     if not node:
       return False
