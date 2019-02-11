@@ -204,7 +204,7 @@ class Way:
 
     return nn
 
-def get_nodes_along_path(self, query_results, lat, lon, heading, lookahead=200):
+  def get_nodes_along_path(self, query_results, lat, lon, heading, lookahead=200):
     nodes = []
     ways = []
     ang = heading
@@ -257,7 +257,7 @@ def get_nodes_along_path(self, query_results, lat, lon, heading, lookahead=200):
 
     return nodes
 
-  def stop_sign_light(self, query_results, lat, lon, heading):
+  def get_stops(self, query_results, lat, lon, heading, lookahead):
     sign = False
     light = False
 
