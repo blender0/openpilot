@@ -245,7 +245,7 @@ def mapsd_thread():
             dist_to_turn = 999
 
         # Look for stop signs or lights
-        stop_sign, stop_light = cur_way.get_stops(last_query_result, lat, lon, heading, 150)
+        stop_sign, stop_light = cur_way.get_stops(last_query_result, lat, lon, heading, speed)
 
         # results, tree, real_nodes, node_to_way = last_query_result
         # cur_pos = geodetic2ecef((lat, lon, 0))
