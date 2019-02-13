@@ -348,6 +348,7 @@ class Planner(object):
     md = None
     l20 = None
     gps_planner_plan = None
+    events = []
 
     for socket, event in self.poller.poll(0):
       if socket is self.model:
@@ -416,6 +417,13 @@ class Planner(object):
               curvature = abs(self.last_live_map_data.curvature)
               v_curvature = math.sqrt(A_Y_MAX / max(1e-4, curvature))
               self.v_curvature = min(NO_CURVATURE_SPEED, v_curvature)
+
+        # Stop sign/lights
+        if self.last_live_map_data.stopSign:
+          events.append(create_event('stopSignAhead', [ET.WARNING]))
+
+        if self.last_live_map_data.stopLight:
+          events.append(create_event('stopLightAhead', [ET.WARNING]))
 
       # leave 1m/s margin on vEgo to asses if turn is limiting our speed.
       self.decel_for_turn = bool(self.v_curvature < min([v_cruise_setpoint, self.v_speedlimit, CS.vEgo + 1.]))
@@ -490,7 +498,6 @@ class Planner(object):
     plan_send = messaging.new_message()
     plan_send.init('plan')
 
-    events = []
     if self.model_dead:
       events.append(create_event('modelCommIssue', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if self.radar_dead or 'commIssue' in self.radar_errors:

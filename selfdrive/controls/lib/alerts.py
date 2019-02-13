@@ -213,6 +213,20 @@ ALERTS = [
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .1, .1, .1),
 
+  Alert(
+      "stopSignAhead",
+      "Stop Sign Ahead",
+      "",
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
+
+  Alert(
+      "stopLightAhead",
+      "Stop Light Ahead",
+      "",
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
+
   # Non-entry only alerts
   Alert(
       "wrongCarModeNoEntry",

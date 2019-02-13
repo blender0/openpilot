@@ -26,6 +26,8 @@ class CarInterface(object):
     self.can_invalid_count = 0
     self.cruise_enabled_prev = False
     self.low_speed_alert = False
+    self.stop_sign_alert = False
+    self.stop_light_alert = False
 
     # *** init the major players ***
     self.CS = CarState(CP)
@@ -278,6 +280,12 @@ class CarInterface(object):
 
     if self.low_speed_alert:
       events.append(create_event('belowSteerSpeed', [ET.WARNING]))
+
+    if self.stop_sign_alert:
+      events.append(create_event('stopSignAhead', [ET.WARNING]))
+
+    if self.stop_light_alert:
+      events.append(create_event('stopLightAhead', [ET.WARNING]))
 
     ret.events = events
     ret.canMonoTimes = canMonoTimes

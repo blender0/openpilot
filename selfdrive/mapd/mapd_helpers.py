@@ -266,13 +266,16 @@ class Way:
     nodes = self.get_nodes_along_path(query_results, lat, lon, heading, 11 * speed)
 
     if nodes:
+      dist = 999
       for n in nodes:
         if self.stop_sign(n):
           sign = True
+          dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
         if self.stop_light(n):
           light = True
+          dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
 
-    return sign, light
+    return sign, light, dist
 
   def stop_sign(self, node):
     if not node:

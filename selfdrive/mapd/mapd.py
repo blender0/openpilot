@@ -245,7 +245,7 @@ def mapsd_thread():
             dist_to_turn = 999
 
         # Look for stop signs or lights
-        stop_sign, stop_light = cur_way.get_stops(last_query_result, lat, lon, heading, speed)
+        stop_sign, stop_light, dist_to_stop = cur_way.get_stops(last_query_result, lat, lon, heading, speed)
 
         # results, tree, real_nodes, node_to_way = last_query_result
         # cur_pos = geodetic2ecef((lat, lon, 0))
@@ -287,6 +287,11 @@ def mapsd_thread():
       if curvature is not None:
         dat.liveMapData.roadCurvatureX = map(float, dists)
         dat.liveMapData.roadCurvature = map(float, curvature)
+
+      # Stops
+      dat.liveMapData.stopSign = stop_sign
+      dat.liveMapData.stopLight = stop_light
+      dat.liveMapData.distToStop = float(dist_to_stop)
 
     dat.liveMapData.mapValid = map_valid
 
