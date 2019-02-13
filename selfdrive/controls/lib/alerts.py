@@ -225,7 +225,7 @@ ALERTS = [
       "Stop Light Ahead",
       "",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
 
   # Non-entry only alerts
   Alert(
