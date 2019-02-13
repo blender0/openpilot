@@ -217,8 +217,8 @@ ALERTS = [
       "stopSignAhead",
       "Stop Sign Ahead",
       "",
-      AlertStatus.userPrompt, AlertSize.mid,
-      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, .4, 0., 4.),
 
   Alert(
       "stopLightAhead",

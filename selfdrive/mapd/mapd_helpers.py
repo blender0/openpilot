@@ -260,13 +260,13 @@ class Way:
   def get_stops(self, query_results, lat, lon, heading, speed):
     sign = False
     light = False
+    dist = 999
 
     results, tree, real_nodes, node_to_way = query_results
     cur_pos = geodetic2ecef((lat, lon, 0))
     nodes = self.get_nodes_along_path(query_results, lat, lon, heading, 11 * speed)
 
     if nodes:
-      dist = 999
       for n in nodes:
         if self.stop_sign(n):
           sign = True
