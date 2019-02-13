@@ -264,7 +264,7 @@ class Way:
 
     results, tree, real_nodes, node_to_way = query_results
     cur_pos = geodetic2ecef((lat, lon, 0))
-    nodes = self.get_nodes_along_path(query_results, lat, lon, heading, 11 * speed)
+    nodes = self.get_nodes_along_path(query_results, lat, lon, heading, max(100, 11 * speed))
 
     if nodes:
       for n in nodes:
