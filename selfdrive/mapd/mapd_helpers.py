@@ -193,11 +193,12 @@ class Way:
         continue
       nodes_pot.append(real_nodes[n])
 
+    # find closest one from remaining
     near = tree.query(cur_pos, 50)
     ind = np.array(near[1])
     d = np.array(near[0])
     for i in enumerate(ind):
-      if d[i[0]] > 0.1 and d[i[0]]<=lookahead:
+      if d[i[0]] > 0.1 and d[i[0]] <= lookahead:
         if real_nodes[i[1]] in nodes_pot:
           nn = real_nodes[i[1]]
           break
@@ -228,7 +229,6 @@ class Way:
           nlat = float(n.lat)
           nlon = float(n.lon)
           
-          # TODO: update heading from last 2 points
           n = way.next_node(query_results, nodes_all, nlat, nlon, ang, lookahead)
           if n:
             ang = self.angle(nlat, nlon, float(n.lat), float(n.lon))
@@ -265,31 +265,45 @@ class Way:
     results, tree, real_nodes, node_to_way = query_results
     cur_pos = geodetic2ecef((lat, lon, 0))
     nodes = self.get_nodes_along_path(query_results, lat, lon, heading, max(100, 11 * speed))
+    nodes_all = tree.query_ball_point(cur_pos, 200)
 
     if nodes:
+      n = self.next_node(query_results, nodes_all, lat, lon, heading, 200)
+      p = self.next_node(query_results, nodes_all, lat, lon, (heading + 180) % 360, 200)
+      dir = self.travel_dir(p, n)
       for n in nodes:
-        if self.stop_sign(n):
+        if self.stop_sign(n, dir):
           sign = True
           dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
-        if self.stop_light(n):
+          break
+        if self.stop_light(n, dir):
           light = True
           dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
+          break
 
     return sign, light, dist
 
-  def stop_sign(self, node):
+  def stop_sign(self, node, dir):
     if not node:
       return False
     
     stop = False
     tags = node.tags
     if 'stop' in tags:
-      if tags['stop'] == 'all' or tags['stop'] == 'minor':
+      if tags['stop'] == 'all':
         stop = True
-      
+    if 'direction' in tags:
+      if tags['direction'] == 'forward':
+        if dir == 0:
+          stop = True
+      elif tags['direction'] == 'backward':
+        if dir == 1:
+          stop = True
+      else:
+        stop = True
     return stop
 
-  def stop_light(self, node):
+  def stop_light(self, node, dir):
     if not node:
       return False
     
@@ -297,8 +311,17 @@ class Way:
     tags = node.tags
     if 'traffic_signals' in tags:
         stop = True
-      
     return stop
+
+  # 0 is forward, 1 is reverse
+  def travel_dir(self, node0, node1):
+    if not self.way:
+      return -1
+    if self.way.nodes.index(node0) < self.way.nodes.index(node1):
+      wdir = 0
+    else:
+      wdir = 1
+    return wdir
 
   def on_way(self, lat, lon, heading, points=None):
     if points is None:

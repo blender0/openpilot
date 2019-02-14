@@ -53,7 +53,7 @@
 #define ALERTSIZE_FULL 3
 
 #define UI_BUF_COUNT 4
-//#define DEBUG_TURN
+#define DEBUG_TURN
 
 const int vwp_w = 1920;
 const int vwp_h = 1080;
