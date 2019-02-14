@@ -270,8 +270,8 @@ def mapsd_thread():
       dat.liveMapData.wayId = cur_way.id
 
       # Speed limit
-      if stop_sign or stop_light:
-        max_speed = 0.5
+      if stop_sign:
+        max_speed = 20
       else:
         max_speed = cur_way.max_speed
       if max_speed is not None:

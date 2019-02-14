@@ -284,7 +284,7 @@ class Way:
     stop = False
     tags = node.tags
     if 'stop' in tags:
-      if tags['stop'] == 'all':
+      if tags['stop'] == 'all' or tags['stop'] == 'minor':
         stop = True
       
     return stop
