@@ -270,16 +270,17 @@ class Way:
     if nodes:
       n = self.next_node(query_results, nodes_all, lat, lon, heading, 200)
       p = self.next_node(query_results, nodes_all, lat, lon, (heading + 180) % 360, 200)
-      dir = self.travel_dir(p, n)
-      for n in nodes:
-        if self.stop_sign(n, dir):
-          sign = True
-          dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
-          break
-        if self.stop_light(n, dir):
-          light = True
-          dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
-          break
+      if n and p:
+        dir = self.travel_dir(p, n)
+        for n in nodes:
+          if self.stop_sign(n, dir):
+            sign = True
+            dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
+            break
+          if self.stop_light(n, dir):
+            light = True
+            dist = abs(self.distance(lat, lon, float(n.lat), float(n.lon)))
+            break
 
     return sign, light, dist
 
