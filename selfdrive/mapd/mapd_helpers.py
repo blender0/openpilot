@@ -318,10 +318,15 @@ class Way:
   def travel_dir(self, node0, node1):
     if not self.way:
       return -1
-    if self.way.nodes.index(node0) < self.way.nodes.index(node1):
-      wdir = 0
-    else:
-      wdir = 1
+
+    try:
+      if self.way.nodes.index(node0) < self.way.nodes.index(node1):
+        wdir = 0
+      else:
+        wdir = 1
+    except ValueError:
+      wdir = -1
+
     return wdir
 
   def on_way(self, lat, lon, heading, points=None):
