@@ -281,10 +281,10 @@ class CarInterface(object):
     if self.low_speed_alert:
       events.append(create_event('belowSteerSpeed', [ET.WARNING]))
 
-    if self.stop_sign_alert:
+    if self.stop_sign_alert and (self.CS.cstm_btns.get_button_status("stop") > 0):
       events.append(create_event('stopSignAhead', [ET.WARNING]))
 
-    if self.stop_light_alert:
+    if self.stop_light_alert and (self.CS.cstm_btns.get_button_status("stop") > 0):
       events.append(create_event('stopLightAhead', [ET.WARNING]))
 
     ret.events = events

@@ -140,7 +140,7 @@ class CarState(object):
     #labels for buttons
     self.btns_init = [["","",["","",""]], \
                       ["","",[""]], \
-                      ["","",[""]], \
+                      ["stop","STP",[""]], \
                       ["cam","CAM",[""]], \
                       ["alwon", "MAD",[""]], \
                       ["sound", "SND", [""]]]
