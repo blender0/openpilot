@@ -271,7 +271,7 @@ def mapsd_thread():
 
       # Speed limit
       if stop_sign:
-        max_speed = 20
+        max_speed = 9
       else:
         max_speed = cur_way.max_speed
       if max_speed is not None:
