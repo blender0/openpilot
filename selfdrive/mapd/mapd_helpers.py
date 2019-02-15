@@ -312,6 +312,9 @@ class Way:
     tags = node.tags
     if 'traffic_signals' in tags:
         stop = True
+    if 'highway' in tags:
+      if tags['highway'] == 'traffic_signals':
+        stop = True
     return stop
 
   # 0 is forward, 1 is reverse
