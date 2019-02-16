@@ -422,10 +422,10 @@ class Planner(object):
               self.v_curvature = min(NO_CURVATURE_SPEED, v_curvature)
 
         # Stop sign/lights
-        if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("stop") > 0):
+        if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("sound") > 0):
           events.append(create_event('stopSignAhead', [ET.WARNING]))
 
-        if self.last_live_map_data.stopLight and (CS.cstm_btns.get_button_status("stop") > 0):
+        if self.last_live_map_data.stopLight and (CS.cstm_btns.get_button_status("sound") > 0):
           events.append(create_event('stopLightAhead', [ET.WARNING]))
 
       # leave 1m/s margin on vEgo to asses if turn is limiting our speed.
