@@ -405,10 +405,10 @@ class Planner(object):
 
         # Speed limit
         if self.last_live_map_data.speedLimitValid:
-          if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("stop") > 0):
-            speed_limit = 9.   # 20 mph
-          else:
-            speed_limit = self.last_live_map_data.speedLimit
+          # if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("stop") > 0):
+          #   speed_limit = 9.   # 20 mph
+          # else:
+          speed_limit = self.last_live_map_data.speedLimit
           set_speed_limit_active = self.params.get("LimitSetSpeed") == "1" and self.params.get("SpeedLimitOffset") is not None
 
           if set_speed_limit_active:
