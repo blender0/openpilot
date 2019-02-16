@@ -179,6 +179,7 @@ def mapsd_thread():
       map_valid = True
       stop_sign = False
       stop_light = False
+      dist_to_stop = 0.
       lat = gps.latitude
       lon = gps.longitude
       heading = gps.bearing
@@ -285,10 +286,10 @@ def mapsd_thread():
         dat.liveMapData.roadCurvatureX = map(float, dists)
         dat.liveMapData.roadCurvature = map(float, curvature)
 
-      # Stops
-      dat.liveMapData.stopSign = stop_sign
-      dat.liveMapData.stopLight = stop_light
-      dat.liveMapData.distToStop = float(dist_to_stop)
+    # Stops
+    dat.liveMapData.stopSign = stop_sign
+    dat.liveMapData.stopLight = stop_light
+    dat.liveMapData.distToStop = float(dist_to_stop)
 
     dat.liveMapData.mapValid = map_valid
 
