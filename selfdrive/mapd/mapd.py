@@ -270,10 +270,7 @@ def mapsd_thread():
       dat.liveMapData.wayId = cur_way.id
 
       # Speed limit
-      if stop_sign:
-        max_speed = 9
-      else:
-        max_speed = cur_way.max_speed
+      max_speed = cur_way.max_speed
       if max_speed is not None:
         dat.liveMapData.speedLimitValid = True
         dat.liveMapData.speedLimit = max_speed

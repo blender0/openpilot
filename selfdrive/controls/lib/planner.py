@@ -405,7 +405,10 @@ class Planner(object):
 
         # Speed limit
         if self.last_live_map_data.speedLimitValid:
-          speed_limit = self.last_live_map_data.speedLimit
+          if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("stop") > 0):
+            speed_limit = 9   # 20 mph
+          else:
+            speed_limit = self.last_live_map_data.speedLimit
           set_speed_limit_active = self.params.get("LimitSetSpeed") == "1" and self.params.get("SpeedLimitOffset") is not None
 
           if set_speed_limit_active:
@@ -419,10 +422,10 @@ class Planner(object):
               self.v_curvature = min(NO_CURVATURE_SPEED, v_curvature)
 
         # Stop sign/lights
-        if self.last_live_map_data.stopSign and (self.CS.cstm_btns.get_button_status("stop") > 0):
+        if self.last_live_map_data.stopSign and (CS.cstm_btns.get_button_status("stop") > 0):
           events.append(create_event('stopSignAhead', [ET.WARNING]))
 
-        if self.last_live_map_data.stopLight and (self.CS.cstm_btns.get_button_status("stop") > 0):
+        if self.last_live_map_data.stopLight and (CS.cstm_btns.get_button_status("stop") > 0):
           events.append(create_event('stopLightAhead', [ET.WARNING]))
 
       # leave 1m/s margin on vEgo to asses if turn is limiting our speed.
