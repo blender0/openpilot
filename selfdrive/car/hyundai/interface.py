@@ -26,7 +26,9 @@ class CarInterface(object):
     self.can_invalid_count = 0
     self.cruise_enabled_prev = False
     self.low_speed_alert = False
-
+    self.stop_sign_alert = False
+    self.stop_light_alert = False
+    
     # *** init the major players ***
     self.CS = CarState(CP)
     self.cp = get_can_parser(CP)
