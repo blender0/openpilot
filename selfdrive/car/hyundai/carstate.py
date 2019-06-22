@@ -211,6 +211,8 @@ class CarState(object):
     self.right_blinker_on = 0
     self.right_blinker_flash = 0
     self.has_scc = False
+    self.lkas_button_on = 0
+    self.openpilot_mad_mode_on = False
 
  #BB init ui buttons
   def init_ui_buttons(self):
@@ -253,19 +255,15 @@ class CarState(object):
     self.door_all_closed = True
     self.seatbelt = cp.vl["CGW1"]['CF_Gway_DrvSeatBeltSw']
 
-    self.brake_pressed = cp.vl["TCS13"]['DriverBraking'] if not self.cstm_btns.get_button_status("alwon") else 0 # I'm Bad
+    self.brake_pressed = cp.vl["TCS13"]['DriverBraking']
     self.esp_disabled = cp.vl["TCS15"]['ESC_Off_Step']
 
     self.park_brake = cp.vl["CGW1"]['CF_Gway_ParkBrakeSw']
     self.main_on = True
     if self.has_scc:
-      self.acc_active = (cp.vl["SCC12"]['ACCMode'] != 0) if not self.cstm_btns.get_button_status("alwon") else \
-            (cp.vl["SCC11"]["MainMode_ACC"] != 0)  # I'm Dangerous!
-      self.acc_active_real = (cp.vl["SCC12"]['ACCMode'] !=0)
+      self.acc_active = cp.vl["SCC12"]['ACCMode'] != 0
     else:
-      self.acc_active = (cp.vl["LVR12"]['CF_Lvr_CruiseSet'] != 0) if not self.cstm_btns.get_button_status("alwon") else \
-            cp.vl['EMS16']['CRUISE_LAMP_M']
-      self.acc_active_real = self.acc_active
+      self.acc_active = cp.vl["LVR12"]['CF_Lvr_CruiseSet'] != 0
     self.pcm_acc_status = int(self.acc_active)
 
     # calc best v_ego estimate, by averaging two opposite corners
@@ -309,6 +307,11 @@ class CarState(object):
     self.stopped = cp.vl["SCC11"]['SCCInfoDisplay'] == 4. if self.has_scc else False
     self.mdps11_strang = cp.vl["MDPS11"]["CR_Mdps_StrAng"]
     self.mdps11_stat = cp.vl["MDPS11"]["CF_Mdps_Stat"]
+
+    if cp_cam.can_valid == True:
+      self.lkas_button_on = 7 >= cp_cam.vl["LKAS11"]['CF_Lkas_LdwsSysState'] != 0
+    elif cp_cam2.can_valid == True:
+      self.lkas_button_on = 7 >= cp_cam2.vl["LKAS11"]['CF_Lkas_LdwsSysState'] != 0
 
     self.user_brake = 0
 
@@ -372,3 +375,6 @@ class CarState(object):
     self.lca_left = cp.vl["LCA11"]["CF_Lca_IndLeft"]
     self.lca_right = cp.vl["LCA11"]["CF_Lca_IndRight"]
     self.blind_spot_on = self.lca_left or self.lca_right
+
+    self.openpilot_mad_mode_on = self.cstm_btns.get_button_status("alwon")
+
