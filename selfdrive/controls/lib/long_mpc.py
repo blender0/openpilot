@@ -31,7 +31,8 @@ class LongitudinalMpc(object):
     self.v_lead = None
     self.x_lead = None
     self.phantom = Phantom(timeout=True, do_sshd_mod=True)
-
+    self.df_data = []
+    self.df_frame = 0
 
     self.last_cloudlog_t = 0.0
 
@@ -199,12 +200,17 @@ class LongitudinalMpc(object):
     return x_lead, v_lead
 
   def update(self, CS, lead, v_cruise_setpoint):
+    v_ego = CS.carState.vEgo
+    a_ego = CS.carState.aEgo
+    gas = CS.carState.gas
+    brake = CS.carState.brake
     self.car_state = CS.carState
     self.v_ego = CS.carState.vEgo
 
     # Setup current mpc state
     self.cur_state[0].x_ego = 0.0
-    self.phantom.update(self.calc_rate(new_frame=True))
+    #self.phantom.update(self.calc_rate(new_frame=True))
+    self.phantom.update()
 
     if self.phantom.data["status"]:
       if self.phantom.data["speed"] != 0.0:
@@ -226,13 +232,26 @@ class LongitudinalMpc(object):
       self.cur_state[0].v_l = v_lead
     else:
       if lead is not None and lead.status:
+        self.df_frame += 1
         x_lead = lead.dRel
         v_lead = max(0.0, lead.vLead)
         a_lead = lead.aLeadK
+        a_rel = lead.aRel
 
         if (v_lead < 0.1 or -a_lead / 2.0 > v_lead):
           v_lead = 0.0
           a_lead = 0.0
+
+        if self.mpc_id == 1 and not CS.carState.cruiseState.enabled:
+          self.df_data.append([v_ego, a_ego, v_lead, x_lead, a_lead, a_rel, gas, brake, time.time()])
+          if self.df_frame >= 200:  # every 5 seconds, write to file
+            try:
+              with open("/data/openpilot/selfdrive/data_collection/df-data", "a") as f:
+                f.write("\n".join([str(i) for i in self.df_data]) + "\n")
+              self.df_data = []
+              self.df_frame = 0
+            except Exception,e:
+              pass
 
         self.v_lead = v_lead
         self.x_lead = x_lead

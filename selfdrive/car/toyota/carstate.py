@@ -59,6 +59,7 @@ def get_can_parser(CP):
     ("SPORT_ON", "GEAR_PACKET", 0),
     ("ECON_ON", "GEAR_PACKET", 0),
     ("BRAKE_PRESSED", "BRAKE_MODULE", 0),
+    ("BRAKE_PRESSURE", "BRAKE_MODULE", 0),
     ("GAS_PEDAL", "GAS_PEDAL", 0),
     ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
     ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
@@ -244,6 +245,7 @@ class CarState(object):
     self.CP = CP
     self.can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
     self.shifter_values = self.can_define.dv["GEAR_PACKET"]['GEAR']
+    
     self.left_blinker_on = 0
     self.right_blinker_on = 0
     self.lkas_barriers = 0
@@ -267,6 +269,9 @@ class CarState(object):
 
     #BB variable for custom buttons
     self.cstm_btns = UIButtons(self,"Toyota","toyota")
+    if self.CP.carFingerprint == CAR.PRIUS:
+      self.alcaMode = 3
+      self.cstm_btns.set_button_status("alca", 0)
 
     #BB pid holder for ALCA
     self.pid = None
@@ -290,7 +295,7 @@ class CarState(object):
   def init_ui_buttons(self):
     btns = []
     btns.append(UIButton("sound", "SND", 0, "", 0))
-    btns.append(UIButton("alca", "ALC", 1, self.alcaLabels[self.alcaMode], 1))
+    btns.append(UIButton("alca", "ALC", 0, self.alcaLabels[self.alcaMode], 1))
     btns.append(UIButton("slow", "SLO", self.sloMode, self.sloLabels[self.sloMode], 2))
     btns.append(UIButton("lka", "LKA", 1, "", 3))
     btns.append(UIButton("tr", "TR", 0, "", 4))
@@ -303,12 +308,20 @@ class CarState(object):
       if (id == 1) and (btn_status == 0) and self.cstm_btns.btns[id].btn_name=="alca":
           if self.cstm_btns.btns[id].btn_label2 == self.alcaLabels[self.alcaMode]:
             self.alcaMode = (self.alcaMode + 1 ) % 4
+            if self.CP.carFingerprint == CAR.PRIUS:
+              self.alcaMode = 3
+              self.cstm_btns.set_button_status("alca", 0)
             kegman.save({'lastALCAMode': int(self.alcaMode)})  # write last ALCAMode setting to file
           else:
             self.alcaMode = 0
+            if self.CP.carFingerprint == CAR.PRIUS:
+              self.alcaMode = 3
+              self.cstm_btns.set_button_status("alca", 0)
             kegman.save({'lastALCAMode': int(self.alcaMode)})  # write last ALCAMode setting to file
           self.cstm_btns.btns[id].btn_label2 = self.alcaLabels[self.alcaMode]
           self.cstm_btns.hasChanges = True
+          if self.CP.carFingerprint == CAR.PRIUS:
+            self.alcaMode = 3
           if self.alcaMode == 3:
             self.cstm_btns.set_button_status("alca", 0)
       elif (id == 2) and (btn_status == 0) and self.cstm_btns.btns[id].btn_name=="slow":
@@ -367,7 +380,9 @@ class CarState(object):
         self.lastspeedlimitvalid = True
       else:
         self.lastspeedlimitvalid = False
-
+        
+    if self.CP.carFingerprint == CAR.PRIUS:
+      self.alcaMode = 3
       
     if msg is not None:
       gps_pkt = msg.gpsLocationExternal
@@ -433,12 +448,10 @@ class CarState(object):
       elif self.gasMode == 2:
         self.econ_on = 1
     self.gear_shifter = parse_gear_shifter(can_gear, self.shifter_values)
-    if self.CP.carFingerprint != CAR.PRIUS:
-      self.left_blinker_on = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 1
-      self.right_blinker_on = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 2
-    else:
-      self.left_blinker_on = False
-      self.right_blinker_on = False
+
+    self.left_blinker_on = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 1
+    self.right_blinker_on = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 2
+
     #self.lkas_barriers = cp_cam.vl["LKAS_HUD"]['BARRIERS']
     #self.left_line = cp_cam.vl["LKAS_HUD"]['LEFT_LINE']
     #self.right_line = cp_cam.vl["LKAS_HUD"]['RIGHT_LINE']
@@ -519,7 +532,7 @@ class CarState(object):
     # we could use the override bit from dbc, but it's triggered at too high torque values
     self.steer_override = abs(self.steer_torque_driver) > STEER_THRESHOLD
 
-    self.user_brake = 0
+    self.user_brake = cp.vl["BRAKE_MODULE"]['BRAKE_PRESSURE']
     if self.CP.carFingerprint == CAR.LEXUS_IS:
       self.pcm_acc_status = cp.vl["PCM_CRUISE_3"]['CRUISE_STATE']
       self.v_cruise_pcm = cp.vl["PCM_CRUISE_3"]['SET_SPEED']

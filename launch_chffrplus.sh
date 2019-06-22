@@ -27,6 +27,9 @@ function launch {
   ln -s /data/openpilot /data/pythonpath
   export PYTHONPATH="$PWD"
 
+  # check to see if custom APK is installed
+  python ./checkCustomAPK.py
+
   # start manager
   cd selfdrive
   ./manager.py
