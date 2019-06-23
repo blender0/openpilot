@@ -46,4 +46,4 @@ DBC = {
   CAR.UNKNOWN: dbc_dict('hyundai_kia_generic', None),
 }
 
-STEER_THRESHOLD = 1.0
+STEER_THRESHOLD = 1.5

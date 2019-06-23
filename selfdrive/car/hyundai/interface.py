@@ -243,7 +243,7 @@ class CarInterface(object):
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
-    if ret.vEgo < self.low_speed_alert:
+    if self.low_speed_alert:
       events.append(create_event('speedTooLow', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if self.CS.madMode == 1:
       if self.CS.lkas_button_on:

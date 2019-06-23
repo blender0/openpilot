@@ -139,13 +139,13 @@ class CarState(object):
   def __init__(self, CP):
 
     self.madLabels = ["Off","LKAS","Cruise"]
-    self.madMode = 0
+    self.madMode = 2
 
     self.Angle = [0, 5, 10, 15,20,25,30,35,60,100,180,270,500]
     self.Angle_Speed = [255,160,100,80,70,60,55,50,40,33,27,17,12]
     #labels for ALCA modes
     self.alcaLabels = ["MadMax","Normal","Wifey","Off"]
-    self.alcaMode = 0
+    self.alcaMode = 3
     #if (CP.carFingerprint == CAR.MODELS):
     # ALCA PARAMS
     # max REAL delta angle for correction vs actuator
