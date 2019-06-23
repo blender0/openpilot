@@ -268,7 +268,7 @@ class CarInterface(object):
           (self.CS.madMode == 2 and not self.CS.acc_enable)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed and and \
+    if ret.gasPressed and \
           ((self.CS.madMode == 1 and not self.CS.lkas_button_on) or \
           (self.CS.madMode == 2 and not self.CS.acc_enable)):
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
