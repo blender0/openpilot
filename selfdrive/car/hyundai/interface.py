@@ -28,6 +28,7 @@ class CarInterface(object):
     self.brake_pressed_prev = False
     self.can_invalid_count = 0
     self.cruise_enabled_prev = False
+    self.acc_enable_prev = False
     self.low_speed_alert = False
     self.lkas_button_on_prev = False
     self.vEgo_prev = False
