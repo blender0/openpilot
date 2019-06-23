@@ -74,7 +74,7 @@ if __name__ == "__main__":
           'lon': evt.liveLocation.lon,
           'alt': evt.liveLocation.alt,
         })
-      if not args.no_print:
+      if False: #not args.no_print:
         if args.pipe:
           sys.stdout.write(msg)
           sys.stdout.flush()
