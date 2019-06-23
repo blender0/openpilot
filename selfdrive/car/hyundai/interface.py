@@ -252,9 +252,9 @@ class CarInterface(object):
       elif not self.CS.lkas_button_on and self.lkas_button_on_prev:
         events.append(create_event('wrongCarMode', [ET.USER_DISABLE]))
     elif self.CS.madMode == 2:
-      if not self.CS.acc_active:
+      if not self.CS.acc_enable:
         events.append(create_event('wrongCarMode', [ET.USER_DISABLE]))
-      elif self.CS.acc_active and not self.acc_active_prev:
+      elif self.CS.acc_enable and not self.acc_enable_prev:
         events.append(create_event('wrongCarMode', [ET.ENABLE]))
     else:
       if ret.cruiseState.enabled and not self.cruise_enabled_prev:
@@ -263,10 +263,14 @@ class CarInterface(object):
         events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
     # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)) and not self.CS.lkas_button_on:
+    if (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)) and \
+          ((self.CS.madMode == 1 and not self.CS.lkas_button_on) or \
+          (self.CS.madMode == 2 and not self.CS.acc_enable)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed and not self.CS.lkas_button_on:
+    if ret.gasPressed and and \
+          ((self.CS.madMode == 1 and not self.CS.lkas_button_on) or \
+          (self.CS.madMode == 2 and not self.CS.acc_enable)):
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
 
     if self.low_speed_alert:
@@ -278,7 +282,7 @@ class CarInterface(object):
     self.gas_pressed_prev = ret.gasPressed
     self.brake_pressed_prev = ret.brakePressed
     self.cruise_enabled_prev = ret.cruiseState.enabled
-    self.acc_active_prev = self.CS.acc_active
+    self.acc_enable_prev = self.CS.acc_enable
     self.lkas_button_on_prev = self.CS.lkas_button_on
     self.vEgo_prev = ret.vEgo
 

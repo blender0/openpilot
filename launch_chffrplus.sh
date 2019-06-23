@@ -11,7 +11,6 @@ function launch {
     if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
        git reset --hard @{u} &&
        git clean -xdf &&
-       rm /data/params/d/CachedFingerprint &&
        exec "${BASH_SOURCE[0]}"
     fi
   fi
@@ -29,6 +28,9 @@ function launch {
 
   # check to see if custom APK is installed
   python ./checkCustomAPK.py
+
+  # Delete problem caches
+  rm /data/params/d/CachedFingerprint
 
   # start manager
   cd selfdrive

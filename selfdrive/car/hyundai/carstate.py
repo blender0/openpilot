@@ -271,8 +271,10 @@ class CarState(object):
     self.main_on = True
     if self.has_scc:
       self.acc_active = cp.vl["SCC12"]['ACCMode'] != 0
+      self.acc_enable = cp.vl["SCC11"]["MainMode_ACC"] != 0
     else:
       self.acc_active = cp.vl["LVR12"]['CF_Lvr_CruiseSet'] != 0
+      self.acc_enable = cp.vl['EMS16']['CRUISE_LAMP_M']
     self.pcm_acc_status = int(self.acc_active)
 
     # calc best v_ego estimate, by averaging two opposite corners
