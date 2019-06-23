@@ -245,12 +245,17 @@ class CarInterface(object):
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
     if ret.vEgo < self.CP.minSteerSpeed:
       events.append(create_event('speedTooLow', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if self.CS.openpilot_mad_mode_on:
+    if self.CS.madMode == 1:
       if self.CS.lkas_button_on:
         if not self.lkas_button_on_prev or ret.vEgo > self.CP.minSteerSpeed >= self.vEgo_prev:
           events.append(create_event('wrongCarMode', [ET.ENABLE]))
       elif not self.CS.lkas_button_on and self.lkas_button_on_prev:
         events.append(create_event('wrongCarMode', [ET.USER_DISABLE]))
+    elif self.CS.madMode == 2:
+      if not self.CS.acc_active:
+        events.append(create_event('wrongCarMode', [ET.USER_DISABLE]))
+      elif self.CS.acc_active and not self.acc_active_prev:
+        events.append(create_event('wrongCarMode', [ET.ENABLE]))
     else:
       if ret.cruiseState.enabled and not self.cruise_enabled_prev:
         events.append(create_event('pcmEnable', [ET.ENABLE]))
@@ -273,6 +278,7 @@ class CarInterface(object):
     self.gas_pressed_prev = ret.gasPressed
     self.brake_pressed_prev = ret.brakePressed
     self.cruise_enabled_prev = ret.cruiseState.enabled
+    self.acc_active_prev = self.CS.acc_active
     self.lkas_button_on_prev = self.CS.lkas_button_on
     self.vEgo_prev = ret.vEgo
 

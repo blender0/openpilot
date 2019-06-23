@@ -138,10 +138,13 @@ def get_camera_parser(CP):
 class CarState(object):
   def __init__(self, CP):
 
+    self.madLabels = ["Off","LKAS","Cruise"]
+    self.madMode = 0
+
     self.Angle = [0, 5, 10, 15,20,25,30,35,60,100,180,270,500]
     self.Angle_Speed = [255,160,100,80,70,60,55,50,40,33,27,17,12]
     #labels for ALCA modes
-    self.alcaLabels = ["MadMax","Normal","Wifey"]
+    self.alcaLabels = ["MadMax","Normal","Wifey","Off"]
     self.alcaMode = 0
     #if (CP.carFingerprint == CAR.MODELS):
     # ALCA PARAMS
@@ -212,7 +215,6 @@ class CarState(object):
     self.right_blinker_flash = 0
     self.has_scc = False
     self.lkas_button_on = 0
-    self.openpilot_mad_mode_on = False
 
  #BB init ui buttons
   def init_ui_buttons(self):
@@ -220,7 +222,7 @@ class CarState(object):
     btns.append(UIButton("sound", "SND", 1, "", 0))
     btns.append(UIButton("alca", "ALC", 1, self.alcaLabels[self.alcaMode], 1))
     btns.append(UIButton("cam", "CAM", 1, "", 2))
-    btns.append(UIButton("alwon", "MAD", 1, "", 3))
+    btns.append(UIButton("alwon", "MAD", 1, self.madLabels[self.madMode], 3))
     btns.append(UIButton("", "", 0, "", 4))
     btns.append(UIButton("", "", 0, "", 5))
 
@@ -231,10 +233,17 @@ class CarState(object):
     if self.cstm_btns.btns[id].btn_status > 0:
       if (id == 1) and (btn_status == 0) and self.cstm_btns.btns[id].btn_name=="alca":
           if self.cstm_btns.btns[id].btn_label2 == self.alcaLabels[self.alcaMode]:
-            self.alcaMode = (self.alcaMode + 1 ) % 3
+            self.alcaMode = (self.alcaMode + 1 ) % 4
           else:
             self.alcaMode = 0
           self.cstm_btns.btns[id].btn_label2 = self.alcaLabels[self.alcaMode]
+          self.cstm_btns.hasChanges = True
+      elif (id == 3) and (btn_status == 0) and self.cstm_btns.btns[id].btn_name=="alwon":
+          if self.cstm_btns.btns[id].btn_label2 == self.madLabels[self.madMode]:
+            self.madMode = (self.madMode + 1 ) % 3
+          else:
+            self.madMode = 0
+          self.cstm_btns.btns[id].btn_label2 = self.madLabels[self.madMode]
           self.cstm_btns.hasChanges = True
       else:
         self.cstm_btns.btns[id].btn_status = btn_status * self.cstm_btns.btns[id].btn_status
@@ -375,6 +384,4 @@ class CarState(object):
     self.lca_left = cp.vl["LCA11"]["CF_Lca_IndLeft"]
     self.lca_right = cp.vl["LCA11"]["CF_Lca_IndRight"]
     self.blind_spot_on = self.lca_left or self.lca_right
-
-    self.openpilot_mad_mode_on = self.cstm_btns.get_button_status("alwon")
 

@@ -109,9 +109,6 @@ class CarController(object):
     self.ALCA.update_status(CS.cstm_btns.get_button_status("alca") > 0)
 
     alca_angle, alca_steer, alca_enabled, turn_signal_needed = self.ALCA.update(enabled, CS, self.cnt, actuators)
-    #if CS.openpilot_mad_mode_on and not CS.acc_active:
-      #apply_steer = int(round(actuators.steer * SteerLimitParams.STEER_MAX))
-    #else:
     apply_steer = int(round(alca_steer * SteerLimitParams.STEER_MAX))
 
     # SPAS limit angle extremes for safety
@@ -201,7 +198,7 @@ class CarController(object):
       can_sends.append(create_spas12(self.packer))
 
     # Force Disable
-    if pcm_cancel_cmd and not CS.openpilot_mad_mode_on:
+    if pcm_cancel_cmd and not CS.madMode == 0:
       can_sends.append(create_clu11(self.packer, CS.clu11, Buttons.CANCEL, 0))
     if CS.stopped and (self.cnt - self.last_resume_cnt) > 5:
       self.last_resume_cnt = self.cnt
