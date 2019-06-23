@@ -4,212 +4,54 @@ Welcome to openpilot by Emmertex
 https://www.youtube.com/ku7tech
 ======
 
-[openpilot](http://github.com/commaai/openpilot) is an open source driving agent. Currently, it performs the functions of Adaptive Cruise Control (ACC) and Lane Keeping Assist System (LKAS) for selected Honda, Toyota, Acura, Lexus, Chevrolet, Hyundai, Kia. It's about on par with Tesla Autopilot and GM Super Cruise, and better than all other manufacturers.
-
-Highlight Features
-=======================
+Please support my work by becoming a [Patreon](https://www.patreon.com/ku7)
+Or donating via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9P9NFMAFZR5XE&source=url)
 
 
-* **Automatic Lane Change Assist (ALC)**: Check your surroundings, signal in the direction you would like to change lanes, and let openpilot do the rest. You can choose between three ALC profiles, Wifey, Normal, and Mad Max. Each increasing in steering torque.
-* **Always Steer (MAD)**: Openpilot will steer whenever Cruise Control is turned on
-* **Select Vision Model (on 0.5.8, `dynamic-follow` branch only)**: You can select whether you would like to use the wiggly model or the normal vision model for path planning. Wiggly has more torque and can better guess the road curvature without lane lines, but it occasionally crashes or mispredicts the path.
-* **EON and openpilot Stats**: With the on-screen UI, you can view stats about your EON such as its temperature, your grey panda's GPS accuracy, the lead car's relative velocity, its distance, and more.
-
-Warning from kegman: `WARNING: Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car. The radar will NOT detect the stationary object in time to slow your car enough to stop. If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.`
-
----
-
-* [Community](#community)
-* [Hardware](#hardware)
-* [Supported Cars](#supported-cars)
-* [Community Maintained Cars](#community-maintained-cars)
-* [In Progress Cars](#in-progress-cars)
-* [How can I add support for my car?](#how-can-i-add-support-for-my-car)
-* [Directory structure](#directory-structure)
-* [User Data / chffr Account / Crash Reporting](#user-data--chffr-account--crash-reporting)
-* [Testing on PC](#testing-on-pc)
-* [Contributing](#contributing)
-* [Licensing](#licensing)
-
----
-
-Community
+What is special about this port?
 ------
 
-openpilot is developed by [comma.ai](https://comma.ai/) and users like you.
+It's unfettered awesome with no corporate fears!
+Where non standard features were made by someone other than me @ku7, they are credited with there Slack Username
 
-We have a [Twitter you should follow](https://twitter.com/comma_ai).
+Based on OpenPilot 0.5.12 from comma.ai
 
-Also, we have a several thousand people community on [Discord](https://discord.comma.ai).
+- Auto-Support almost all Hyundai/Kia/Genesis --- NO FINGERPRINTS!!!
+- - If it doesn't work, hit me up on discord, theres no need for fingerprints, don't stress!
+- Branch Switching from UI (Thanks @pjlao307 from community-pilot)
+- Do not disable when Accelerator is depressed (MAD button*)
+- - Off means only enabled when cruise is set, and disables on pedals.
+- - LKAS means it enables and disables based on LKAS Kick Panel Button (EXPERIMENTAL, thanks @xx979xx)
+- - CRUISE means it enables and disables based on cruise state
+- Disable auto-steering on blinker, but leave OP engaged
+- - Disabled on first blink, and stays disabled until 1 second of no blinking.
+- Sounds! (Thanks Sid and @BogGyver and #Tesla in general) (SND button*)
+- Tesla UI (Thanks everyone in #Tesla)
+- - 3 Switch positions change the display, you probably want it far left. (OnePlus Only)
+- Advanced Lane Change Assist (Thanks @BogGyver) (ALCA button*) (EXPERIMENTAL)
+- - And with Blind Spot Detection for any Kia/Hyundai with it
+- Panda auto-detects Camera Pinout
+- - And now so does OP!  LKAS on CAN 2 or CAN 3, it doesn't matter!
+- No need for giraffe switches, If no EON, then forwards stock camera (Thanks @JamesT-1)
+- Dashcam Recorder (Thanks @pjlao307)
+- Full Time Stock LKAS passthrough*
+- - Including High Beam Assist and Automatic Emergency Braking, Blind Spot, Traffic Sign Detection, and more.
+- - This includes Land Departure Warning, but stock LKAS must be enabled for this.
+- Optional Dynamic Stock and OP Steering.  The moment OP isn't steering, it switched back to Stock (LKAS button*)*
+- Cruise Setpoint set from OSM Speed Limit
+- - With Slow Down before speed limites
+- - and NO slow down in corners!!
+- Compress when not uploading
+- Automatically detects CAN Specifics (checksum, SCC, so on)
+- Probably other things I have forgotten
 
+* Has known issues
 
-Hardware
+Known issues
 ------
 
-At the moment openpilot supports the [EON Dashcam DevKit](https://comma.ai/shop/products/eon-dashcam-devkit). A [panda](https://shop.comma.ai/products/panda-obd-ii-dongle) and a [giraffe](https://comma.ai/shop/products/giraffe/) are recommended tools to interface the EON with the car. We'd like to support other platforms as well.
-
-Install openpilot on a neo device by entering ``https://openpilot.comma.ai`` during NEOS setup.
-
-Supported Cars
-------
-
-| Make                 | Model                    | Supported Package    | Lateral | Longitudinal   | No Accel Below   | No Steer Below | Giraffe           |
-| ---------------------| -------------------------| ---------------------| --------| ---------------| -----------------| ---------------|-------------------|
-| Acura                | ILX 2016-17              | AcuraWatch Plus      | Yes     | Yes            | 25mph<sup>1</sup>| 25mph          | Nidec             |
-| Acura                | RDX 2018                 | AcuraWatch Plus      | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Nidec             |
-| Buick<sup>3</sup>    | Regal 2018               | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Chevrolet<sup>3</sup>| Malibu 2017              | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Chevrolet<sup>3</sup>| Volt 2017-18             | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Cadillac<sup>3</sup> | ATS 2018                 | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Chrysler             | Pacifica 2018            | Adaptive Cruise      | Yes     | Stock          | 0mph             | 9mph           | FCA               |
-| Chrysler             | Pacifica Hybrid 2017-18  | Adaptive Cruise      | Yes     | Stock          | 0mph             | 9mph           | FCA               |
-| Chrysler             | Pacifica Hybrid 2019     | Adaptive Cruise      | Yes     | Stock          | 0mph             | 39mph          | FCA               |
-| GMC<sup>3</sup>      | Acadia Denali 2018       | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Holden<sup>3</sup>   | Astra 2017               | Adaptive Cruise      | Yes     | Yes            | 0mph             | 7mph           | Custom<sup>7</sup>|
-| Honda                | Accord 2018              | All                  | Yes     | Stock          | 0mph             | 3mph           | Bosch             |
-| Honda                | Civic Sedan/Coupe 2016-18| Honda Sensing        | Yes     | Yes            | 0mph             | 12mph          | Nidec             |
-| Honda                | Civic Sedan/Coupe 2019   | Honda Sensing        | Yes     | Stock          | 0mph             | 2mph           | Bosch             |
-| Honda                | Civic Hatchback 2017-19  | Honda Sensing        | Yes     | Stock          | 0mph             | 12mph          | Bosch             |
-| Honda                | CR-V 2015-16             | Touring              | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Nidec             |
-| Honda                | CR-V 2017-19             | Honda Sensing        | Yes     | Stock          | 0mph             | 12mph          | Bosch             |
-| Honda                | CR-V Hybrid 2019         | All                  | Yes     | Stock          | 0mph             | 12mph          | Bosch             |
-| Honda                | Odyssey 2017-19          | Honda Sensing        | Yes     | Yes            | 25mph<sup>1</sup>| 0mph           | Inverted Nidec    |
-| Honda                | Passport 2019            | All                  | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Inverted Nidec    |
-| Honda                | Pilot 2016-18            | Honda Sensing        | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Nidec             |
-| Honda                | Pilot 2019               | All                  | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Inverted Nidec    |
-| Honda                | Ridgeline 2017-19        | Honda Sensing        | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Nidec             |
-| Hyundai              | Santa Fe 2019            | All                  | Yes     | Stock          | 0mph             | 0mph           | Custom<sup>6</sup>|
-| Hyundai              | Elantra 2017             | SCC + LKAS           | Yes     | Stock          | 19mph            | 34mph          | Custom<sup>6</sup>|
-| Hyundai              | Genesis 2018             | All                  | Yes     | Stock          | 19mph            | 34mph          | Custom<sup>6</sup>|
-| Jeep                 | Grand Cherokee 2017-18   | Adaptive Cruise      | Yes     | Stock          | 0mph             | 9mph           | FCA               |
-| Jeep                 | Grand Cherokee 2019      | Adaptive Cruise      | Yes     | Stock          | 0mph             | 39mph          | FCA               |
-| Kia                  | Optima 2019              | SCC + LKAS           | Yes     | Stock          | 0mph             | 0mph           | Custom<sup>6</sup>|
-| Kia                  | Sorento 2018             | All                  | Yes     | Stock          | 0mph             | 0mph           | Custom<sup>6</sup>|
-| Kia                  | Stinger 2018             | SCC + LKAS           | Yes     | Stock          | 0mph             | 0mph           | Custom<sup>6</sup>|
-| Lexus                | RX Hybrid 2016-19        | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Subaru               | Crosstrek 2018           | EyeSight             | Yes     | Stock          | 0mph             | 0mph           | Subaru            |
-| Subaru               | Impreza 2019             | EyeSight             | Yes     | Stock          | 0mph             | 0mph           | Subaru            |
-| Toyota               | Avalon 2016              | TSS-P                | Yes     | Yes<sup>2</sup>| 20mph<sup>1</sup>| 0mph           | Toyota            |
-| Toyota               | Camry 2018<sup>4</sup>   | All                  | Yes     | Stock          | 0mph<sup>5</sup> | 0mph           | Toyota            |
-| Toyota               | C-HR 2017-18<sup>4</sup> | All                  | Yes     | Stock          | 0mph             | 0mph           | Toyota            |
-| Toyota               | Corolla 2017-18          | All                  | Yes     | Yes<sup>2</sup>| 20mph<sup>1</sup>| 0mph           | Toyota            |
-| Toyota               | Corolla Hatchback 2019   | All                  | Yes     | Yes            | 0mph             | 0mph           | Toyota            |
-| Toyota               | Highlander 2017-18       | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Toyota               | Highlander Hybrid 2018   | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Toyota               | Prius 2016               | TSS-P                | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Toyota               | Prius 2017-19            | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Toyota               | Prius Prime 2017-19      | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-| Toyota               | Rav4 2016                | TSS-P                | Yes     | Yes<sup>2</sup>| 20mph<sup>1</sup>| 0mph           | Toyota            |
-| Toyota               | Rav4 2017-18             | All                  | Yes     | Yes<sup>2</sup>| 20mph<sup>1</sup>| 0mph           | Toyota            |
-| Toyota               | Rav4 2019                | All                  | Yes     | Yes            | 0mph             | 0mph           | Toyota            |
-| Toyota               | Rav4 Hybrid 2017-18      | All                  | Yes     | Yes<sup>2</sup>| 0mph             | 0mph           | Toyota            |
-
-<sup>1</sup>[Comma Pedal](https://community.comma.ai/wiki/index.php/Comma_Pedal) is used to provide stop-and-go capability to some of the openpilot-supported cars that don't currently support stop-and-go. Here is how to [build a Comma Pedal](https://medium.com/@jfrux/comma-pedal-building-with-macrofab-6328bea791e8). ***NOTE: The Comma Pedal is not officially supported by [comma.ai](https://comma.ai)***  
-<sup>2</sup>When disconnecting the Driver Support Unit (DSU), otherwise longitudinal control is stock ACC. For DSU locations, see [Toyota Wiki page](https://community.comma.ai/wiki/index.php/Toyota)  
-<sup>3</sup>[GM installation guide](https://zoneos.com/volt/).  
-<sup>4</sup>It needs an extra 120Ohm resistor ([pic1](https://i.imgur.com/CmdKtTP.jpg), [pic2](https://i.imgur.com/s2etUo6.jpg)) on bus 3 and giraffe switches set to 01X1 (11X1 for stock LKAS), where X depends on if you have the [comma power](https://comma.ai/shop/products/power/).  
-<sup>5</sup>28mph for Camry 4CYL L, 4CYL LE and 4CYL SE which don't have Full-Speed Range Dynamic Radar Cruise Control.  
-<sup>6</sup>Open sourced [Hyundai Giraffe](https://github.com/commaai/neo/tree/master/giraffe/hyundai) is designed for the 2019 Sante Fe; pinout may differ for other Hyundais.  
-<sup>7</sup>Community built Giraffe, find more information [here](https://zoneos.com/shop/).  
-
-Community Maintained Cars
-------
-
-| Make                 | Model                    | Supported Package    | Lateral | Longitudinal   | No Accel Below   | No Steer Below | Giraffe           |
-| ---------------------| -------------------------| ---------------------| --------| ---------------| -----------------| ---------------|-------------------|
-| Honda                | Fit 2018                 | Honda Sensing        | Yes     | Yes            | 25mph<sup>1</sup>| 12mph          | Inverted Nidec    |
-| Tesla                | Model S 2012-13          | All                  | Yes     | Not yet        | Not applicable   | 0mph           | Custom<sup>8</sup>|
-
-[[Honda Fit Pull Request]](https://github.com/commaai/openpilot/pull/266). <br />
-[[Tesla Model S Pull Request]](https://github.com/commaai/openpilot/pull/246) <br />
-<sup>8</sup>Community built Giraffe, find more information here [Community Tesla Giraffe](https://github.com/jeankalud/neo/tree/tesla_giraffe/giraffe/tesla) <br />
-
-Community Maintained Cars are not confirmed by comma.ai to meet our [safety model](https://github.com/commaai/openpilot/blob/devel/SAFETY.md). Be extra cautious using them.
-
-In Progress Cars
-------
-- All TSS-P Toyota with Steering Assist and LSS-P Lexus with Steering Assist or Lane Keep Assist.
-  - Only remaining Toyota cars with no port yet are the Avalon and the Sienna.
-- All Hyundai with SmartSense.
-- All Kia with SCC and LKAS.
-- All Chrysler, Jeep, Fiat with Adaptive Cruise Control and LaneSense.
-
-How can I add support for my car?
-------
-
-If your car has adaptive cruise control and lane keep assist, you are in luck. Using a [panda](https://comma.ai/shop/products/panda-obd-ii-dongle/) and [cabana](https://community.comma.ai/cabana/), you can understand how to make your car drive by wire.
-
-We've written guides for [Brand](https://medium.com/@comma_ai/how-to-write-a-car-port-for-openpilot-7ce0785eda84) and [Model](https://medium.com/@comma_ai/openpilot-port-guide-for-toyota-models-e5467f4b5fe6) ports. These guides might help you after you have the basics figured out.
-
-- BMW, Audi, Volvo, and Mercedes all use [FlexRay](https://en.wikipedia.org/wiki/FlexRay) and can be supported after [FlexRay support](https://github.com/commaai/openpilot/pull/463) is merged.
-- We put time into a Ford port, but the steering has a 10 second cutout limitation that makes it unusable.
-- The 2016-2017 Honda Accord uses a custom signaling protocol for steering that's unlikely to ever be upstreamed.
-
-Directory structure
-------
-    .
-    ├── apk                 # The apk files used for the UI
-    ├── cereal              # The messaging spec used for all logs on EON
-    ├── common              # Library like functionality we've developed here
-    ├── installer/updater   # Manages auto-updates of openpilot
-    ├── opendbc             # Files showing how to interpret data from cars
-    ├── panda               # Code used to communicate on CAN and LIN
-    ├── phonelibs           # Libraries used on EON
-    ├── pyextra             # Libraries used on EON
-    └── selfdrive           # Code needed to drive the car
-        ├── assets          # Fonts and images for UI
-        ├── athena          # Allows communication with the app
-        ├── boardd          # Daemon to talk to the board
-        ├── can             # Helpers for parsing CAN messages
-        ├── car             # Car specific code to read states and control actuators
-        ├── common          # Shared C/C++ code for the daemons
-        ├── controls        # Perception, planning and controls
-        ├── debug           # Tools to help you debug and do car ports
-        ├── locationd       # Soon to be home of precise location
-        ├── logcatd         # Android logcat as a service
-        ├── loggerd         # Logger and uploader of car data
-        ├── mapd            # Fetches map data and computes next global path
-        ├── proclogd        # Logs information from proc
-        ├── sensord         # IMU / GPS interface code
-        ├── test            # Car simulator running code through virtual maneuvers
-        ├── ui              # The UI
-        └── visiond         # Vision pipeline
-
-To understand how the services interact, see `selfdrive/service_list.yaml`
-
-User Data / chffr Account / Crash Reporting
-------
-
-By default, openpilot creates an account and includes a client for chffr, our dashcam app. We use your data to train better models and improve openpilot for everyone.
-
-It's open source software, so you are free to disable it if you wish.
-
-It logs the road facing camera, CAN, GPS, IMU, magnetometer, thermal sensors, crashes, and operating system logs.
-The user facing camera is only logged if you explicitly opt-in in settings.
-It does not log the microphone.
-
-By using it, you agree to [our privacy policy](https://community.comma.ai/privacy.html). You understand that use of this software or its related services will generate certain types of user data, which may be logged and stored at the sole discretion of comma.ai. By accepting this agreement, you grant an irrevocable, perpetual, worldwide right to comma.ai for the use of this data.
-
-Testing on PC
-------
-
-Check out [openpilot-tools](https://github.com/commaai/openpilot-tools): lots of tools you can use to replay driving data, test and develop openpilot from your pc.
-
-Also, within openpilot there is a rudimentary infrastructure to run a basic simulation and generate a report of openpilot's behavior in different longitudinal control scenarios.
-
-```bash
-# Requires working docker
-./run_docker_tests.sh
-```
-
-Contributing
-------
-
-We welcome both pull requests and issues on [github](http://github.com/commaai/openpilot). Bug fixes and new car ports encouraged.
-
-We also have a [bounty program](https://comma.ai/bounties.html).
-
-Want to get paid to work on openpilot? [comma.ai is hiring](https://comma.ai/jobs/)
+- ALCA (Advanced Lane Change Assist) is not properly tuned.  Use with caution
+- CAM (Stock LKAS Forwarding) occasionally silenetly faults, turning off stock LKAS
 
 Licensing
 ------
@@ -225,4 +67,3 @@ NO WARRANTY EXPRESSED OR IMPLIED.**
 ---
 
 <img src="https://d1qb2nb5cznatu.cloudfront.net/startups/i/1061157-bc7e9bf3b246ece7322e6ffe653f6af8-medium_jpg.jpg?buster=1458363130" width="75"></img> <img src="https://cdn-images-1.medium.com/max/1600/1*C87EjxGeMPrkTuVRVWVg4w.png" width="225"></img>
-
