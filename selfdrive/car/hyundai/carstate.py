@@ -236,6 +236,7 @@ class CarState(object):
             self.alcaMode = (self.alcaMode + 1 ) % 4
           else:
             self.alcaMode = 0
+          self.alcaMode = 3
           self.cstm_btns.btns[id].btn_label2 = self.alcaLabels[self.alcaMode]
           self.cstm_btns.hasChanges = True
       elif (id == 3) and (btn_status == 0) and self.cstm_btns.btns[id].btn_name=="alwon":
@@ -243,6 +244,7 @@ class CarState(object):
             self.madMode = (self.madMode + 1 ) % 3
           else:
             self.madMode = 0
+          self.alcaMode = 3
           self.cstm_btns.btns[id].btn_label2 = self.madLabels[self.madMode]
           self.cstm_btns.hasChanges = True
       else:
@@ -255,7 +257,7 @@ class CarState(object):
     self.can_valid = cp.can_valid
 
     if (cp.vl["SCC11"]['TauGapSet'] > 0):
-        self.has_scc = True
+      self.has_scc = True
 
     # update prevs, update must run once per Loop
     self.prev_left_blinker_on = self.left_blinker_on
